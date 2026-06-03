@@ -6,12 +6,11 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.string('external_id').notNullable().unique()
+      table.string('external_id').notNullable().unique() // id côté OPTCG API, permet de changer d'API sans toucher au schéma
       table.integer('set_id').unsigned().notNullable()
       table.foreign('set_id').references('sets.id')
       table.string('name').notNullable()
       table.string('number').notNullable()
-      table.string('set_code').notNullable()
       table.string('rarity').notNullable()
       table.string('image_url').notNullable()
 

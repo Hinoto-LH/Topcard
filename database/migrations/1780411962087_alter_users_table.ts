@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.integer('role_id').unsigned().nullable()
+      table.integer('role_id').unsigned().nullable() // nullable : le rôle est assigné par le controller à l'inscription
       table.foreign('role_id').references('roles.id')
     })
   }
