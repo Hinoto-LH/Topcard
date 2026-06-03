@@ -7,19 +7,97 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class CardSchema extends BaseModel {
+  static $columns = ['createdAt', 'externalId', 'id', 'imageUrl', 'name', 'number', 'rarity', 'setCode', 'setId', 'updatedAt'] as const
+  $columns = CardSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare externalId: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare imageUrl: string
+  @column()
+  declare name: string
+  @column()
+  declare number: string
+  @column()
+  declare rarity: string
+  @column()
+  declare setCode: string
+  @column()
+  declare setId: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class RoleSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'name', 'updatedAt'] as const
+  $columns = RoleSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class SetSchema extends BaseModel {
+  static $columns = ['code', 'createdAt', 'externalId', 'id', 'name', 'totalCards', 'updatedAt'] as const
+  $columns = SetSchema.$columns
+  @column()
+  declare code: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare externalId: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare totalCards: number | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
+  static $columns = ['createdAt', 'email', 'firstName', 'id', 'lastName', 'password', 'roleId', 'updatedAt', 'username'] as const
   $columns = UserSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
   declare email: string
   @column()
-  declare fullName: string | null
+  declare firstName: string
   @column({ isPrimary: true })
   declare id: number
+  @column()
+  declare lastName: string | null
   @column({ serializeAs: null })
   declare password: string
+  @column()
+  declare roleId: number | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+  @column()
+  declare username: string
+}
+
+export class UsersCardSchema extends BaseModel {
+  static $columns = ['cardId', 'createdAt', 'id', 'quantity', 'userId'] as const
+  $columns = UsersCardSchema.$columns
+  @column()
+  declare cardId: number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare quantity: number
+  @column()
+  declare userId: number
 }
