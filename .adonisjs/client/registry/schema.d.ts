@@ -19,6 +19,42 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'syncs.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/sync'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/syncs_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/syncs_controller').default['index']>>>
+    }
+  }
+  'syncs.sync_sets': {
+    methods: ["POST"]
+    pattern: '/admin/sync/sets'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/syncs_controller').default['syncSets']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/syncs_controller').default['syncSets']>>>
+    }
+  }
+  'syncs.sync_cards': {
+    methods: ["POST"]
+    pattern: '/admin/sync/cards/:setId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { setId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/syncs_controller').default['syncCards']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/syncs_controller').default['syncCards']>>>
+    }
+  }
   'new_account.create': {
     methods: ["GET","HEAD"]
     pattern: '/signup'

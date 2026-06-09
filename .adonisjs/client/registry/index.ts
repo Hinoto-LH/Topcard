@@ -12,6 +12,24 @@ const routes = {
     tokens: [{"old":"/","type":0,"val":"/","end":""}],
     types: placeholder as Registry['home']['types'],
   },
+  'syncs.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/admin/sync',
+    tokens: [{"old":"/admin/sync","type":0,"val":"admin","end":""},{"old":"/admin/sync","type":0,"val":"sync","end":""}],
+    types: placeholder as Registry['syncs.index']['types'],
+  },
+  'syncs.sync_sets': {
+    methods: ["POST"],
+    pattern: '/admin/sync/sets',
+    tokens: [{"old":"/admin/sync/sets","type":0,"val":"admin","end":""},{"old":"/admin/sync/sets","type":0,"val":"sync","end":""},{"old":"/admin/sync/sets","type":0,"val":"sets","end":""}],
+    types: placeholder as Registry['syncs.sync_sets']['types'],
+  },
+  'syncs.sync_cards': {
+    methods: ["POST"],
+    pattern: '/admin/sync/cards/:setId',
+    tokens: [{"old":"/admin/sync/cards/:setId","type":0,"val":"admin","end":""},{"old":"/admin/sync/cards/:setId","type":0,"val":"sync","end":""},{"old":"/admin/sync/cards/:setId","type":0,"val":"cards","end":""},{"old":"/admin/sync/cards/:setId","type":1,"val":"setId","end":""}],
+    types: placeholder as Registry['syncs.sync_cards']['types'],
+  },
   'new_account.create': {
     methods: ["GET","HEAD"],
     pattern: '/signup',

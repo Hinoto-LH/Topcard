@@ -15,6 +15,15 @@ router.on('/').renderInertia('home', {}).as('home')
 
 router
   .group(() => {
+    router.get('/admin/sync', [controllers.Syncs, 'index'])
+    router.post('/admin/sync/sets', [controllers.Syncs, 'syncSets'])
+    router.post('/admin/sync/cards/:setId', [controllers.Syncs, 'syncCards'])
+  })
+  .use(middleware.auth())
+  .use(middleware.admin())
+
+router
+  .group(() => {
     router.get('signup', [controllers.NewAccount, 'create'])
     router.post('signup', [controllers.NewAccount, 'store'])
 
@@ -28,3 +37,4 @@ router
     router.post('logout', [controllers.Session, 'destroy'])
   })
   .use(middleware.auth())
+
