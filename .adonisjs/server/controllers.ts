@@ -4,7 +4,9 @@
  */
 
 export const controllers = {
+  Collections: () => import('#controllers/collections_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Session: () => import('#controllers/session_controller'),
+  Sets: () => import('#controllers/sets_controller'),
   Syncs: () => import('#controllers/syncs_controller'),
 }

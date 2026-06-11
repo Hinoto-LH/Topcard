@@ -54,6 +54,42 @@ const routes = {
     tokens: [{"old":"/login","type":0,"val":"login","end":""}],
     types: placeholder as Registry['session.store']['types'],
   },
+  'collections.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/collection',
+    tokens: [{"old":"/collection","type":0,"val":"collection","end":""}],
+    types: placeholder as Registry['collections.index']['types'],
+  },
+  'collections.store': {
+    methods: ["POST"],
+    pattern: '/collection',
+    tokens: [{"old":"/collection","type":0,"val":"collection","end":""}],
+    types: placeholder as Registry['collections.store']['types'],
+  },
+  'collections.update': {
+    methods: ["PATCH"],
+    pattern: '/collection/:id',
+    tokens: [{"old":"/collection/:id","type":0,"val":"collection","end":""},{"old":"/collection/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['collections.update']['types'],
+  },
+  'collections.destroy': {
+    methods: ["DELETE"],
+    pattern: '/collection/:id',
+    tokens: [{"old":"/collection/:id","type":0,"val":"collection","end":""},{"old":"/collection/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['collections.destroy']['types'],
+  },
+  'sets.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/sets',
+    tokens: [{"old":"/sets","type":0,"val":"sets","end":""}],
+    types: placeholder as Registry['sets.index']['types'],
+  },
+  'sets.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/sets/:id',
+    tokens: [{"old":"/sets/:id","type":0,"val":"sets","end":""},{"old":"/sets/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['sets.show']['types'],
+  },
   'session.destroy': {
     methods: ["POST"],
     pattern: '/logout',

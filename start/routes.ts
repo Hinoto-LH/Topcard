@@ -13,6 +13,7 @@ import router from '@adonisjs/core/services/router'
 
 router.on('/').renderInertia('home', {}).as('home')
 
+// Route Admin
 router
   .group(() => {
     router.get('/admin/sync', [controllers.Syncs, 'index'])
@@ -31,6 +32,22 @@ router
     router.post('login', [controllers.Session, 'store'])
   })
   .use(middleware.guest())
+
+// Route Collection
+router
+.group(() => {
+  router.get('/collection', [controllers.Collections, 'index'])
+  router.post('/collection', [controllers.Collections, 'store'])
+  router.patch('/collection/:id', [controllers.Collections, 'update'])
+  router.delete('/collection/:id', [controllers.Collections, 'destroy'])
+})
+.use(middleware.auth())
+
+// Route Set
+router.group(() => {
+  router.get('/sets', [controllers.Sets, 'index'])
+  router.get('/sets/:id', [controllers.Sets, 'show'])
+})
 
 router
   .group(() => {
