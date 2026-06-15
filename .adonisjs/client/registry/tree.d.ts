@@ -22,6 +22,7 @@ export interface ApiDefinition {
     store: typeof routes['collections.store']
     update: typeof routes['collections.update']
     destroy: typeof routes['collections.destroy']
+    missing: typeof routes['collections.missing']
   }
   sets: {
     index: typeof routes['sets.index']

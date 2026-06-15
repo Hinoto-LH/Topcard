@@ -78,6 +78,12 @@ const routes = {
     tokens: [{"old":"/collection/:id","type":0,"val":"collection","end":""},{"old":"/collection/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['collections.destroy']['types'],
   },
+  'collections.missing': {
+    methods: ["GET","HEAD"],
+    pattern: '/collection/missing/:id',
+    tokens: [{"old":"/collection/missing/:id","type":0,"val":"collection","end":""},{"old":"/collection/missing/:id","type":0,"val":"missing","end":""},{"old":"/collection/missing/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['collections.missing']['types'],
+  },
   'sets.index': {
     methods: ["GET","HEAD"],
     pattern: '/sets',

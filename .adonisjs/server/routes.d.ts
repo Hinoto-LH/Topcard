@@ -16,6 +16,7 @@ export type ScannedRoutes = {
     'collections.store': { paramsTuple?: []; params?: {} }
     'collections.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'collections.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'collections.missing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'sets.index': { paramsTuple?: []; params?: {} }
     'sets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
@@ -26,6 +27,7 @@ export type ScannedRoutes = {
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
     'collections.index': { paramsTuple?: []; params?: {} }
+    'collections.missing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'sets.index': { paramsTuple?: []; params?: {} }
     'sets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
@@ -35,6 +37,7 @@ export type ScannedRoutes = {
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
     'collections.index': { paramsTuple?: []; params?: {} }
+    'collections.missing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'sets.index': { paramsTuple?: []; params?: {} }
     'sets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }

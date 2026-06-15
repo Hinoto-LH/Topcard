@@ -151,6 +151,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collections_controller').default['destroy']>>>
     }
   }
+  'collections.missing': {
+    methods: ["GET","HEAD"]
+    pattern: '/collection/missing/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collections_controller').default['missing']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collections_controller').default['missing']>>>
+    }
+  }
   'sets.index': {
     methods: ["GET","HEAD"]
     pattern: '/sets'

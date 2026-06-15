@@ -40,6 +40,7 @@ router
   router.post('/collection', [controllers.Collections, 'store'])
   router.patch('/collection/:id', [controllers.Collections, 'update'])
   router.delete('/collection/:id', [controllers.Collections, 'destroy'])
+  router.get('/collection/missing/:id', [controllers.Collections, 'missing'])
 })
 .use(middleware.auth())
 

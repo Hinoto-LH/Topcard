@@ -20,6 +20,9 @@ export default class SetsController {
 
         const userCards =  await UserCard.query().where('userId', user.id)
         const ownerCardsIds = userCards.map((uc) => uc.cardId)
+        const ownedInSet = userCards.filter((uc) =>
+            set.cards.some((card) => card.id === uc.cardId)
+            ).length
 
         const completion = set.cards.length > 0
         ? Math.round((ownerCardsIds.length / set.cards.length) * 100)
