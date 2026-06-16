@@ -1,8 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import UserCard from '#models/user_card'
 import Set from '#models/set'
-import User from '#models/user'
-import Card from '#models/card'
+import SetTransformer from '#transformers/set_transformer'
 
 export default class CollectionsController {
     // Charge la collection de l'utilisateur connecté avec filtres optionnels
@@ -108,7 +107,7 @@ export default class CollectionsController {
     : 0
 
     return inertia.render('collection/missing', {
-        set: set.serialize() as any,
+        set: SetTransformer.transform(set) as any,
         missCards: missCards.map((c) => c.serialize()),
         completion })
   }

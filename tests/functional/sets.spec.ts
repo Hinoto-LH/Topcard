@@ -92,5 +92,7 @@ test.group('Sets > détail', (group) => {
 
     response.assertStatus(200)
     assert.include(response.body().props.ownerCardsIds, card1.id)
+    // 1 carte sur 2 possédée → 50%
+    assert.equal(response.body().props.completion, 50)
   })
 })
