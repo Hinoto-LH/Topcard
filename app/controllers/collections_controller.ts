@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import UserCard from '#models/user_card'
 import Set from '#models/set'
 import SetTransformer from '#transformers/set_transformer'
+import { updateQuantityValidator } from '#validators/collection'
 
 export default class CollectionsController {
     // Charge la collection de l'utilisateur connecté avec filtres optionnels
@@ -61,7 +62,8 @@ export default class CollectionsController {
         .where('userId', user.id)
         .firstOrFail()
 
-        userCard.quantity = Number(request.input('quantity'))
+        const { quantity } = await request.validateUsing(updateQuantityValidator)
+        userCard.quantity = quantity
         await userCard.save()
 
         session.flash('success', 'Quantité mise à jour')
@@ -108,7 +110,7 @@ export default class CollectionsController {
 
     return inertia.render('collection/missing', {
         set: SetTransformer.transform(set) as any,
-        missCards: missCards.map((c) => c.serialize()),
+        missCards: missCards.map((c) => c.serialize()) as any,
         completion })
   }
 }
