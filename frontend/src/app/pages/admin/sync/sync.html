@@ -1,0 +1,24 @@
+<h1>Synchronisation</h1>
+
+<!-- Message de retour après une sync (succès ou erreur) -->
+@if (message()) {
+  <p>{{ message()!.text }}</p>
+}
+
+<button (click)="syncSets()" [disabled]="loading()">
+  {{ loading() ? 'Synchronisation...' : 'Synchroniser tous les sets' }}
+</button>
+
+<h2>Sets en base ({{ sets().length }})</h2>
+
+@for (set of sets(); track set.id) {
+  <div>
+    <span>{{ set.name }} ({{ set.code }})</span>
+    <!-- Bouton pour synchroniser les cartes d'un set spécifique -->
+    <button (click)="syncCards(set.id)" [disabled]="loading()">
+      Sync cartes
+    </button>
+  </div>
+} @empty {
+  <p>Aucun set en base. Lance une sync pour commencer.</p>
+}

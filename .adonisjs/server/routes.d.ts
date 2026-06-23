@@ -4,27 +4,50 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
-    'home': { paramsTuple?: []; params?: {} }
-    'new_account.create': { paramsTuple?: []; params?: {} }
+    'syncs.index': { paramsTuple?: []; params?: {} }
+    'syncs.sync_sets': { paramsTuple?: []; params?: {} }
+    'syncs.sync_cards': { paramsTuple: [ParamValue]; params: {'setId': ParamValue} }
     'new_account.store': { paramsTuple?: []; params?: {} }
-    'session.create': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
+    'collections.index': { paramsTuple?: []; params?: {} }
+    'collections.store': { paramsTuple?: []; params?: {} }
+    'collections.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'collections.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'collections.missing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'sets.index': { paramsTuple?: []; params?: {} }
+    'sets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'me.show': { paramsTuple?: []; params?: {} }
   }
   GET: {
-    'home': { paramsTuple?: []; params?: {} }
-    'new_account.create': { paramsTuple?: []; params?: {} }
-    'session.create': { paramsTuple?: []; params?: {} }
+    'syncs.index': { paramsTuple?: []; params?: {} }
+    'collections.index': { paramsTuple?: []; params?: {} }
+    'collections.missing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'sets.index': { paramsTuple?: []; params?: {} }
+    'sets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'me.show': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
-    'home': { paramsTuple?: []; params?: {} }
-    'new_account.create': { paramsTuple?: []; params?: {} }
-    'session.create': { paramsTuple?: []; params?: {} }
+    'syncs.index': { paramsTuple?: []; params?: {} }
+    'collections.index': { paramsTuple?: []; params?: {} }
+    'collections.missing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'sets.index': { paramsTuple?: []; params?: {} }
+    'sets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'me.show': { paramsTuple?: []; params?: {} }
   }
   POST: {
+    'syncs.sync_sets': { paramsTuple?: []; params?: {} }
+    'syncs.sync_cards': { paramsTuple: [ParamValue]; params: {'setId': ParamValue} }
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
+    'collections.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+  }
+  PATCH: {
+    'collections.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+  }
+  DELETE: {
+    'collections.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

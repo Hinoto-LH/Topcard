@@ -1,0 +1,18 @@
+<nav>
+  <a routerLink="/sets">Sets</a>
+
+  @if (auth.isLoggedIn()) {
+    <a routerLink="/collection">Ma collection</a>
+    @if (auth.isAdmin()) {
+      <a routerLink="/admin/sync">Admin</a>
+    }
+    <button (click)="logout()">Déconnexion</button>
+  } @else {
+    <a routerLink="/login">Connexion</a>
+    <a routerLink="/signup">Inscription</a>
+  }
+</nav>
+
+<main>
+  <router-outlet />
+</main>

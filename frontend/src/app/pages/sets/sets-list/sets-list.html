@@ -1,0 +1,19 @@
+<h1>Sets</h1>
+
+<!-- Pendant le chargement -->
+@if (loading()) {
+  <p>Chargement...</p>
+} @else {
+  <!-- @for répète le bloc pour chaque set du tableau, track id optimise le rendu -->
+  @for (set of sets(); track set.id) {
+    <div>
+      <h2>{{ set.name }}</h2>
+      <p>Code : {{ set.code }}</p>
+      <p>{{ set.totalCards }} cartes</p>
+      <!-- routerLink avec variable : navigue vers /sets/42 par exemple -->
+      <a [routerLink]="['/sets', set.id]">Voir les cartes</a>
+    </div>
+  } @empty {
+    <p>Aucun set disponible.</p>
+  }
+}

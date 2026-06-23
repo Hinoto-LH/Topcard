@@ -12,6 +12,7 @@ export default class extends BaseSchema {
       table.string('name').notNullable()
       table.string('number').notNullable()
       table.string('rarity').notNullable()
+      table.string('variant').nullable().defaultTo('Normal')
       table.string('image_url').notNullable()
 
       table.timestamp('created_at')

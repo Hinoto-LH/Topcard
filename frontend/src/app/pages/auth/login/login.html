@@ -1,0 +1,26 @@
+<h1>Connexion</h1>
+
+<!-- Affiche l'erreur si le login échoue -->
+@if (error()) {
+  <p>{{ error() }}</p>
+}
+
+<form (ngSubmit)="submit()">
+  <label>
+    Email
+    <!-- [(ngModel)] lie l'input à la variable email du composant dans les deux sens -->
+    <input type="email" [(ngModel)]="email" name="email" required />
+  </label>
+
+  <label>
+    Mot de passe
+    <input type="password" [(ngModel)]="password" name="password" required />
+  </label>
+
+  <!-- Désactivé pendant le chargement pour éviter un double envoi -->
+  <button type="submit" [disabled]="loading()">
+    {{ loading() ? 'Connexion...' : 'Se connecter' }}
+  </button>
+</form>
+
+<p>Pas encore de compte ? <a routerLink="/signup">S'inscrire</a></p>

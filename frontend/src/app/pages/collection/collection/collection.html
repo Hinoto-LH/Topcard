@@ -1,0 +1,49 @@
+
+<h1>Ma collection</h1>
+
+<!-- Filtres : (change)="load()" recharge la liste dès qu'un filtre change -->
+<form (ngSubmit)="load()">
+  <input type="text" [(ngModel)]="search" name="search" placeholder="Rechercher une carte..." />
+
+  <!-- Liste déroulante des sets disponibles -->
+  <select [(ngModel)]="setId" name="setId" (change)="load()">
+    <option value="">Tous les sets</option>
+    @for (set of sets(); track set.id) {
+      <option [value]="set.id">{{ set.name }}</option>
+    }
+  </select>
+
+  <input type="text" [(ngModel)]="rarity" name="rarity" placeholder="Rareté..." (change)="load()" />
+
+  <button type="submit">Rechercher</button>
+</form>
+
+@if (loading()) {
+  <p>Chargement...</p>
+} @else {
+  @for (userCard of userCards(); track userCard.id) {
+    <div>
+      <p>{{ userCard.card?.name }}</p>
+      <p>{{ userCard.card?.set?.name }}</p>
+
+      <!-- Input nombre lié à la quantité, appelle updateQuantity à chaque changement -->
+      <input
+        type="number"
+        [value]="userCard.quantity"
+        min="1"
+        (change)="updateQuantity(userCard.id, +$any($event.target).value)"
+      />
+
+      <button (click)="remove(userCard.id)">Supprimer</button>
+
+      <!-- Lien vers les cartes manquantes du set de cette carte -->
+      @if (userCard.card?.set?.id) {
+        <a [routerLink]="['/collection/missing', userCard.card!.set.id]">
+          Cartes manquantes
+        </a>
+      }
+    </div>
+  } @empty {
+    <p>Aucune carte dans ta collection.</p>
+  }
+}

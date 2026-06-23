@@ -1,0 +1,28 @@
+<a routerLink="/sets">← Retour aux sets</a>
+
+@if (loading()) {
+  <p>Chargement...</p>
+} @else if (set()) {
+  <h1>{{ set()!.name }}</h1>
+  <p>Complétion : {{ completion() }}%</p>
+
+  <div>
+    @for (card of set()!.cards; track card.id) {
+      <div>
+        <img [src]="card.imageUrl" [alt]="card.name" />
+        <p>{{ card.name }}</p>
+        <p>{{ card.number }} — {{ card.rarity }}</p>
+
+        @if (owns(card.id)) {
+          <!-- L'utilisateur possède déjà cette carte -->
+          <span>Dans ma collection</span>
+        } @else if (auth.isLoggedIn()) {
+          <!-- Bouton désactivé pendant l'ajout de cette carte spécifique -->
+          <button (click)="addCard(card.id)" [disabled]="addingCardId() === card.id">
+            {{ addingCardId() === card.id ? 'Ajout...' : 'Ajouter' }}
+          </button>
+        }
+      </div>
+    }
+  </div>
+}
