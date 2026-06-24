@@ -1,1 +1,88 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base ─────────────────────────────────────────────────────────────────── */
+html, body {
+  min-height: 100vh;
+  background-color: #0B1B32;
+  color: #F0E8D0;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Boutons ──────────────────────────────────────────────────────────────── */
+@layer components {
+
+  /* CTA principal : dégradé or */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 w-full px-7 py-3 rounded-lg border-none cursor-pointer no-underline font-semibold text-sm transition-all duration-200;
+    background: linear-gradient(135deg, #B08B3A, #ECD084);
+    color: #0B1B32;
+  }
+  .btn-primary:hover    { opacity: 0.92; transform: translateY(-1px); }
+  .btn-primary:active   { transform: translateY(0); }
+  .btn-primary:disabled { @apply opacity-50 cursor-not-allowed; transform: none; }
+
+  /* Bouton secondaire : contour or */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 w-full px-7 py-3 rounded-lg cursor-pointer no-underline font-medium text-sm transition-all duration-200;
+    background: transparent;
+    color: #ECD084;
+    border: 1px solid #B08B3A;
+  }
+  .btn-secondary:hover {
+    background: rgba(236, 208, 132, 0.07);
+    border-color: #ECD084;
+  }
+
+  /* Groupe champ + label */
+  .field {
+    @apply flex flex-col gap-1.5;
+  }
+  .field label {
+    @apply text-xs font-medium uppercase tracking-wider;
+    color: #9AACC0;
+  }
+  .field input {
+    @apply w-full px-4 py-3 rounded-lg text-sm outline-none transition-all duration-200;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid #1A3356;
+    color: #F0E8D0;
+    font-family: 'Inter', sans-serif;
+  }
+  .field input:focus {
+    border-color: #B08B3A;
+    box-shadow: 0 0 0 3px rgba(176, 139, 58, 0.18);
+  }
+  .field input::placeholder {
+    color: #9AACC0;
+    opacity: 0.55;
+  }
+
+  /* Panel (carte, sidebar, modale) */
+  .panel {
+    background: #0F2444;
+    border: 1px solid #1A3356;
+    @apply rounded-xl;
+  }
+
+  /* Séparateur "ou" */
+  .divider {
+    @apply flex items-center gap-4 text-xs;
+    color: #9AACC0;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    @apply flex-1 h-px;
+    background: #1A3356;
+  }
+
+  /* Message d'erreur */
+  .error-msg {
+    @apply flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-sm;
+    background: rgba(220, 38, 38, 0.12);
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    color: #FCA5A5;
+  }
+}

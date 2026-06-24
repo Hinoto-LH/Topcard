@@ -63,8 +63,8 @@ export class SyncService {
   
   // Récupère toutes les cartes d'un set depuis l'API (avec pagination)
   // et les upsert en base.
-  async syncCards(setExternalId: string): Promise<{ synced: number; errors: string[] }> {
-    const set = await  Set.findByOrFail('externalId', setExternalId)
+  async syncCards(setId: string | number): Promise<{ synced: number; errors: string[] }> {
+    const set = await Set.findOrFail(setId)
 
     let offset = 0
     const limit = 100

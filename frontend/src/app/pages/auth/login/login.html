@@ -1,26 +1,121 @@
-<h1>Connexion</h1>
+<div class="min-h-screen flex flex-col lg:flex-row">
 
-<!-- Affiche l'erreur si le login échoue -->
-@if (error()) {
-  <p>{{ error() }}</p>
-}
+  <!-- ── Panneau gauche : branding (desktop uniquement) ──────────────────── -->
+  <div class="hidden lg:flex flex-col justify-between w-5/12 p-10"
+       style="background: linear-gradient(160deg, #0F2444 0%, #0B1B32 100%);
+              border-right: 1px solid #1A3356;">
 
-<form (ngSubmit)="submit()">
-  <label>
-    Email
-    <!-- [(ngModel)] lie l'input à la variable email du composant dans les deux sens -->
-    <input type="email" [(ngModel)]="email" name="email" required />
-  </label>
+    <img src="/logo.png" alt="Topcard" class="h-10 w-auto" />
 
-  <label>
-    Mot de passe
-    <input type="password" [(ngModel)]="password" name="password" required />
-  </label>
+    <div class="space-y-5">
+      <p class="text-xs font-semibold tracking-widest uppercase"
+         style="color: #B08B3A;">
+        ⚓ Rejoins l'équipage
+      </p>
+      <h1 class="text-4xl font-bold leading-tight" style="color: #F0E8D0;">
+        Le journal de bord<br />
+        de ta <span style="color: #ECD084;">collection.</span>
+      </h1>
+      <p class="text-sm leading-relaxed" style="color: #9AACC0;">
+        Connecte-toi pour retrouver tes cartes, tes doublons et ta
+        progression set par set — synchronisée sur tous tes appareils.
+      </p>
+    </div>
 
-  <!-- Désactivé pendant le chargement pour éviter un double envoi -->
-  <button type="submit" [disabled]="loading()">
-    {{ loading() ? 'Connexion...' : 'Se connecter' }}
-  </button>
-</form>
+    <div class="flex gap-6 text-xs" style="color: #9AACC0;">
+      <span>✓ Gratuit</span>
+      <span>✓ Export CSV</span>
+      <span>✓ Sans publicité</span>
+    </div>
+  </div>
 
-<p>Pas encore de compte ? <a routerLink="/signup">S'inscrire</a></p>
+  <!-- ── Panneau droit : formulaire ──────────────────────────────────────── -->
+  <div class="flex flex-1 items-center justify-center px-6 py-10 lg:py-0"
+       style="background: #0B1B32;">
+
+    <div class="w-full max-w-md space-y-7">
+
+      <!-- Logo + tagline (mobile uniquement) -->
+      <div class="flex flex-col items-center gap-3 lg:hidden">
+        <img src="/logo.png" alt="Topcard" class="h-12 w-auto" />
+        <p class="text-sm text-center" style="color: #9AACC0;">
+          Le journal de bord de ta collection.
+        </p>
+      </div>
+
+      <!-- Onglets -->
+      <div class="flex border-b" style="border-color: #1A3356;">
+        <span class="pb-3 pr-6 text-sm font-semibold border-b-2"
+              style="color: #ECD084; border-color: #ECD084;">
+          Se connecter
+        </span>
+        <a routerLink="/signup"
+           class="pb-3 px-6 text-sm font-medium"
+           style="color: #9AACC0; text-decoration: none;">
+          Créer un compte
+        </a>
+      </div>
+
+      <!-- Erreur -->
+      @if (error()) {
+        <div class="error-msg flex items-center gap-2">
+          <ng-icon name="lucideAlertCircle" size="16" />
+          {{ error() }}
+        </div>
+      }
+
+      <!-- Formulaire -->
+      <form (ngSubmit)="submit()" class="space-y-5">
+
+        <div class="field">
+          <label for="email">Adresse e-mail</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  style="color: #9AACC0;">
+              <ng-icon name="lucideMail" size="16" />
+            </span>
+            <input id="email" type="email" [(ngModel)]="email" name="email"
+                   placeholder="capitaine@navire.com" class="pl-10" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="flex justify-between items-center">
+            <label for="password">Mot de passe</label>
+            <a href="#" class="text-xs" style="color: #B08B3A;">Oublié ?</a>
+          </div>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  style="color: #9AACC0;">
+              <ng-icon name="lucideLock" size="16" />
+            </span>
+            <input id="password"
+                   [type]="showPassword ? 'text' : 'password'"
+                   [(ngModel)]="password" name="password"
+                   placeholder="••••••••" class="pl-10 pr-10" required />
+            <button type="button" (click)="showPassword = !showPassword"
+                    class="absolute right-3 top-1/2 -translate-y-1/2"
+                    style="color: #9AACC0; background: none; border: none; cursor: pointer;">
+              <ng-icon [name]="showPassword ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="loading()">
+          @if (loading()) { Connexion en cours… } @else { Hisser les voiles → }
+        </button>
+
+      </form>
+
+      <p class="text-center text-sm" style="color: #9AACC0;">
+        Pas encore de compte ?
+        <a routerLink="/signup" class="font-medium"
+           style="color: #ECD084; text-decoration: none;">
+          Embarquer ici
+        </a>
+      </p>
+
+    </div>
+  </div>
+
+</div>

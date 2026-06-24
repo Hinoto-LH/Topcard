@@ -1,18 +1,140 @@
-<nav>
-  <a routerLink="/sets">Sets</a>
+<!-- ── Navbar (masquée sur les pages login / signup via LayoutService) ──────── -->
+@if (layout.showNav()) {
+  <nav class="fixed top-0 left-0 right-0 z-50 h-16"
+       style="background: #0B1B32; border-bottom: 1px solid #1A3356;">
 
-  @if (auth.isLoggedIn()) {
-    <a routerLink="/collection">Ma collection</a>
-    @if (auth.isAdmin()) {
-      <a routerLink="/admin/sync">Admin</a>
+    <div class="flex items-center justify-between h-full px-5 lg:px-8 max-w-7xl mx-auto">
+
+      <!-- Logo -->
+      <a routerLink="/sets" class="flex items-center">
+        <img src="/logo.png" alt="Topcard" class="h-8 w-auto" />
+      </a>
+
+      <!-- ── Liens desktop ──────────────────────────────────────────────────── -->
+      <div class="hidden lg:flex items-center gap-8">
+        <a routerLink="/sets"
+           routerLinkActive="font-semibold"
+           class="text-sm transition-colors duration-200"
+           style="color: #9AACC0;"
+           [style.color]="'#9AACC0'"
+           (mouseenter)="$event.target && ($any($event.target).style.color='#ECD084')"
+           (mouseleave)="$event.target && ($any($event.target).style.color='#9AACC0')">
+          Sets
+        </a>
+
+        @if (auth.isLoggedIn()) {
+          <a routerLink="/collection"
+             routerLinkActive="font-semibold"
+             class="text-sm transition-colors duration-200"
+             style="color: #9AACC0;"
+             (mouseenter)="$event.target && ($any($event.target).style.color='#ECD084')"
+             (mouseleave)="$event.target && ($any($event.target).style.color='#9AACC0')">
+            Ma collection
+          </a>
+        }
+      </div>
+
+      <!-- ── Actions desktop ───────────────────────────────────────────────── -->
+      <div class="hidden lg:flex items-center gap-3">
+        @if (auth.isLoggedIn()) {
+          @if (auth.isAdmin()) {
+            <a routerLink="/admin/sync"
+               class="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition-colors"
+               style="color: #9AACC0;">
+              <ng-icon name="lucideSettings" size="15" />
+              Admin
+            </a>
+          }
+          <button (click)="logout()"
+                  class="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition-colors"
+                  style="color: #9AACC0; background: none; border: none; cursor: pointer;">
+            <ng-icon name="lucideLogOut" size="15" />
+            Déconnexion
+          </button>
+        } @else {
+          <a routerLink="/login"
+             class="text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+             style="color: #ECD084; text-decoration: none;">
+            Se connecter
+          </a>
+          <a routerLink="/signup"
+             class="text-sm font-semibold px-4 py-2 rounded-lg"
+             style="background: linear-gradient(135deg, #B08B3A, #ECD084); color: #0B1B32; text-decoration: none;">
+            Créer un compte
+          </a>
+        }
+      </div>
+
+      <!-- ── Bouton hamburger (mobile) ─────────────────────────────────────── -->
+      <button (click)="toggleMenu()"
+              class="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg"
+              style="color: #9AACC0; background: none; border: none; cursor: pointer;">
+        @if (menuOpen()) {
+          <ng-icon name="lucideX" size="20" />
+        } @else {
+          <ng-icon name="lucideMenu" size="20" />
+        }
+      </button>
+
+    </div>
+
+    <!-- ── Menu mobile drawer ────────────────────────────────────────────────── -->
+    @if (menuOpen()) {
+      <div class="lg:hidden flex flex-col px-5 pt-3 pb-5 gap-1"
+           style="background: #0F2444; border-top: 1px solid #1A3356;">
+
+        <a routerLink="/sets" (click)="closeMenu()"
+           class="flex items-center px-3 py-3 rounded-lg text-sm font-medium"
+           style="color: #F0E8D0; text-decoration: none;">
+          Sets
+        </a>
+
+        @if (auth.isLoggedIn()) {
+          <a routerLink="/collection" (click)="closeMenu()"
+             class="flex items-center px-3 py-3 rounded-lg text-sm font-medium"
+             style="color: #F0E8D0; text-decoration: none;">
+            Ma collection
+          </a>
+
+          @if (auth.isAdmin()) {
+            <a routerLink="/admin/sync" (click)="closeMenu()"
+               class="flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium"
+               style="color: #F0E8D0; text-decoration: none;">
+              <ng-icon name="lucideSettings" size="15" />
+              Admin
+            </a>
+          }
+
+          <div style="height: 1px; background: #1A3356;" class="my-2"></div>
+
+          <button (click)="logout()"
+                  class="flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium w-full text-left"
+                  style="color: #9AACC0; background: none; border: none; cursor: pointer;">
+            <ng-icon name="lucideLogOut" size="15" />
+            Déconnexion
+          </button>
+
+        } @else {
+          <div style="height: 1px; background: #1A3356;" class="my-2"></div>
+          <a routerLink="/login" (click)="closeMenu()"
+             class="flex items-center px-3 py-3 rounded-lg text-sm font-medium"
+             style="color: #ECD084; text-decoration: none;">
+            Se connecter
+          </a>
+          <a routerLink="/signup" (click)="closeMenu()"
+             class="flex items-center justify-center px-3 py-3 rounded-lg text-sm font-semibold"
+             style="background: linear-gradient(135deg, #B08B3A, #ECD084); color: #0B1B32; text-decoration: none;">
+            Créer un compte
+          </a>
+        }
+      </div>
     }
-    <button (click)="logout()">Déconnexion</button>
-  } @else {
-    <a routerLink="/login">Connexion</a>
-    <a routerLink="/signup">Inscription</a>
-  }
-</nav>
 
-<main>
+  </nav>
+}
+
+<!-- ── Contenu principal ────────────────────────────────────────────────────── -->
+<!-- pt-16 compense la hauteur de la navbar fixe (64px) sur les pages normales -->
+<main [class.pt-16]="layout.showNav()">
   <router-outlet />
 </main>

@@ -1,16 +1,21 @@
-import { Component, inject, signal } from '@angular/core'
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
 import { AuthService } from '../../../services/auth'
+import { LayoutService } from '../../../services/layout'
 
 @Component({
   selector: 'app-signup',
   imports: [FormsModule, RouterLink],
   templateUrl: './signup.html',
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit, OnDestroy {
   private auth = inject(AuthService)
   private router = inject(Router)
+  private layout = inject(LayoutService)
+
+  ngOnInit()    { this.layout.showNav.set(false) }
+  ngOnDestroy() { this.layout.showNav.set(true) }
 
   email = ''
   password = ''
