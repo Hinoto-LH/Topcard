@@ -13,6 +13,8 @@ export class SetsListComponent implements OnInit {
 
   sets = signal<Set[]>([])
   loading = signal(true)
+  // 8 emplacements vides pour les squelettes de chargement
+  skeletons = Array(8)
 
   ngOnInit() {
     this.setsService.getAll().subscribe({

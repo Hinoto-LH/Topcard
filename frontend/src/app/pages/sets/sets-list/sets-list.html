@@ -1,19 +1,73 @@
-<h1>Sets</h1>
+<!-- Enveloppe la page entière : px-5 = padding horizontal mobile, lg:px-8 = plus large sur desktop -->
+<!-- max-w-7xl mx-auto = largeur max centrée, py-8 = espace vertical -->
+<div class="px-5 lg:px-8 py-8 max-w-7xl mx-auto overflow-x-hidden">
 
-<!-- Pendant le chargement -->
-@if (loading()) {
-  <p>Chargement...</p>
-} @else {
-  <!-- @for répète le bloc pour chaque set du tableau, track id optimise le rendu -->
-  @for (set of sets(); track set.id) {
-    <div>
-      <h2>{{ set.name }}</h2>
-      <p>Code : {{ set.code }}</p>
-      <p>{{ set.totalCards }} cartes</p>
-      <!-- routerLink avec variable : navigue vers /sets/42 par exemple -->
-      <a [routerLink]="['/sets', set.id]">Voir les cartes</a>
+  <!-- ── En-tête ────────────────────────────────────────────────────────────── -->
+  <!-- mb-8 = marge basse pour espacer du contenu en dessous -->
+  <div class="mb-8">
+    <!-- text-2xl font-bold = titre principal ; couleur crème de la charte -->
+    <h1 class="text-2xl font-bold" style="color: #F0E8D0;">Sets</h1>
+    <!-- Sous-titre discret en bleu-gris -->
+    <p class="text-sm mt-1" style="color: #9AACC0;">Tous les sets One Piece TCG disponibles</p>
+  </div>
+
+  <!-- ── État de chargement : squelettes animés ─────────────────────────────── -->
+  @if (loading()) {
+    <!-- Même grille que les vraies cartes pour éviter un "saut" au chargement -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Array(8) dans le TS crée 8 éléments vides pour les 8 placeholders -->
+      @for (_ of skeletons; track $index) {
+        <!-- panel = classe globale : fond #0F2444, bordure #1A3356, coins arrondis -->
+        <div class="panel p-5 space-y-3">
+          <!-- Blocs gris animés qui imitent la forme du contenu réel -->
+          <!-- animate-pulse = Tailwind : opacité qui pulse en boucle -->
+          <div class="h-5 rounded animate-pulse" style="background: #1A3356; width: 70%;"></div>
+          <div class="h-4 rounded animate-pulse" style="background: #1A3356; width: 45%;"></div>
+          <div class="h-3 rounded animate-pulse" style="background: #1A3356; width: 30%;"></div>
+        </div>
+      }
     </div>
-  } @empty {
-    <p>Aucun set disponible.</p>
+
+  } @else {
+    <!-- ── Grille des sets ──────────────────────────────────────────────────── -->
+    <!-- grid-cols-1 : 1 colonne mobile -->
+    <!-- sm:grid-cols-2 : 2 colonnes à partir de 640px (tablette) -->
+    <!-- lg:grid-cols-3 : 3 colonnes à partir de 1024px (desktop) -->
+    <!-- gap-4 = 16px entre chaque carte -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      @for (set of sets(); track set.id) {
+        <!-- <a> avec routerLink = navigation Angular sans rechargement de page -->
+        <!-- flex flex-col gap-3 = colonne verticale avec 12px entre chaque enfant -->
+        <!-- transition-colors duration-200 = bordure qui change couleur en douceur au hover -->
+        <a [routerLink]="['/sets', set.id]"
+           class="panel p-5 flex flex-col gap-3 transition-colors duration-200"
+           style="text-decoration: none; border-color: #1A3356;"
+           (mouseenter)="$any($event.currentTarget).style.borderColor='#B08B3A'"
+           (mouseleave)="$any($event.currentTarget).style.borderColor='#1A3356'">
+
+          <!-- Nom du set : principale info -->
+          <h2 class="text-sm font-semibold leading-snug" style="color: #F0E8D0;">
+            {{ set.name }}
+          </h2>
+
+          <!-- mt-auto pousse ce bloc en bas de la carte, quelle que soit la hauteur -->
+          <p class="text-xs mt-auto" style="color: #9AACC0;">
+            <!-- ?? '—' : affiche un tiret si totalCards est null -->
+            {{ set.totalCards ?? '—' }} cartes
+          </p>
+
+          <!-- Lien d'action en bas : couleur or foncé + flèche texte -->
+          <span class="text-xs font-medium" style="color: #ECD084;">
+            Voir les cartes →
+          </span>
+
+        </a>
+      } @empty {
+        <p style="color: #9AACC0;">Aucun set disponible.</p>
+      }
+
+    </div>
   }
-}
+
+</div>
