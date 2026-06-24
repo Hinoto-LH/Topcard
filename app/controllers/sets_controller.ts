@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import UserCard from '#models/user_card'
 import CardSet from '#models/set'
-import SetTransformer from '#transformers/set_transformer'
 
 export default class SetsController {
   async index({ response }: HttpContext) {
@@ -26,7 +25,7 @@ export default class SetsController {
     const completion = set.cards.length > 0 ? Math.round((ownedInSet / set.cards.length) * 100) : 0
 
     return response.json({
-      set: SetTransformer.transform(set),
+      set: set.serialize(),
       ownerCardsIds,
       completion,
     })

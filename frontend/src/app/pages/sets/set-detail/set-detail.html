@@ -1,28 +1,148 @@
-<a routerLink="/sets">← Retour aux sets</a>
+<!-- Même conteneur que sets-list : padding adaptatif + largeur max centrée -->
+<div class="px-5 lg:px-8 py-8 max-w-7xl mx-auto overflow-x-hidden">
 
-@if (loading()) {
-  <p>Chargement...</p>
-} @else if (set()) {
-  <h1>{{ set()!.name }}</h1>
-  <p>Complétion : {{ completion() }}%</p>
+  <!-- ── Lien retour ─────────────────────────────────────────────────────────── -->
+  <!-- inline-flex items-center gap-2 : flèche + texte alignés horizontalement -->
+  <!-- mb-6 : espace avant le header -->
+  <a routerLink="/sets"
+     class="inline-flex items-center gap-2 text-sm mb-6"
+     style="color: #9AACC0; text-decoration: none;">
+    ← Retour aux sets
+  </a>
 
-  <div>
-    @for (card of set()!.cards; track card.id) {
-      <div>
-        <img [src]="card.imageUrl" [alt]="card.name" />
-        <p>{{ card.name }}</p>
-        <p>{{ card.number }} — {{ card.rarity }}</p>
+  <!-- ── État de chargement ─────────────────────────────────────────────────── -->
+  @if (loading()) {
 
-        @if (owns(card.id)) {
-          <!-- L'utilisateur possède déjà cette carte -->
-          <span>Dans ma collection</span>
-        } @else if (auth.isLoggedIn()) {
-          <!-- Bouton désactivé pendant l'ajout de cette carte spécifique -->
-          <button (click)="addCard(card.id)" [disabled]="addingCardId() === card.id">
-            {{ addingCardId() === card.id ? 'Ajout...' : 'Ajouter' }}
-          </button>
+    <!-- Squelette du header -->
+    <div class="mb-8 space-y-3">
+      <!-- Simule le titre du set -->
+      <div class="h-7 w-64 rounded animate-pulse" style="background: #1A3356;"></div>
+      <!-- Simule la barre de complétion -->
+      <div class="h-3 w-48 rounded-full animate-pulse" style="background: #1A3356;"></div>
+    </div>
+
+    <!-- Grille de squelettes de cartes : même responsive que la vraie grille -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      <!-- Array(12) dans le TS génère 12 placeholders -->
+      @for (_ of skeletons; track $index) {
+        <div class="panel overflow-hidden">
+          <!-- Ratio ~3/4 pour imiter une carte TCG en portrait -->
+          <div class="aspect-[3/4] animate-pulse" style="background: #1A3356;"></div>
+          <!-- Deux lignes de texte sous l'image -->
+          <div class="p-2 space-y-2">
+            <div class="h-3 rounded animate-pulse" style="background: #1A3356; width: 80%;"></div>
+            <div class="h-2 rounded animate-pulse" style="background: #1A3356; width: 50%;"></div>
+          </div>
+        </div>
+      }
+    </div>
+
+  } @else if (set()) {
+
+    <!-- ── Header ────────────────────────────────────────────────────────────── -->
+    <div class="mb-8">
+
+      <!-- Nom du set + nombre de cartes sur la même ligne -->
+      <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
+        <h1 class="text-2xl font-bold break-words" style="color: #F0E8D0;">{{ set()!.name }}</h1>
+        <!-- Badge "N cartes" affiché si totalCards est connu -->
+        @if (set()!.totalCards) {
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0"
+                style="background: rgba(236, 208, 132, 0.1);
+                       border: 1px solid rgba(236, 208, 132, 0.25);
+                       color: #ECD084;">
+            {{ set()!.totalCards }} cartes
+          </span>
         }
       </div>
-    }
-  </div>
-}
+
+      <!-- Barre de complétion (visible uniquement si l'utilisateur est connecté) -->
+      @if (auth.isLoggedIn()) {
+        <div class="flex items-center gap-3">
+          <!-- Piste grise : max-w-xs limite la largeur de la barre -->
+          <div class="flex-1 max-w-xs h-2 rounded-full" style="background: #1A3356;">
+            <!-- Remplissage doré : width dynamique selon completion() -->
+            <!-- transition-all duration-500 : animation au chargement -->
+            <div class="h-2 rounded-full transition-all duration-500"
+                 style="background: linear-gradient(90deg, #B08B3A, #ECD084);"
+                 [style.width]="completion() + '%'">
+            </div>
+          </div>
+          <!-- Pourcentage à droite de la barre -->
+          <span class="text-sm font-semibold" style="color: #ECD084;">
+            {{ completion() }}%
+          </span>
+        </div>
+      }
+    </div>
+
+    <!-- ── Grille des cartes ──────────────────────────────────────────────────── -->
+    <!-- 2 colonnes mobile → 3 tablette → 4 md → 5 desktop -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+
+      @for (card of set()!.cards; track card.id) {
+
+        <!-- panel + overflow-hidden : coins arrondis qui coupent l'image -->
+        <!-- relative : nécessaire pour l'overlay "Possédée" en position absolue -->
+        <div class="panel overflow-hidden flex flex-col relative">
+
+          <!-- ── Image de la carte ────────────────────────────────────────── -->
+          <!-- aspect-[3/4] : ratio portrait TCG (63×88mm) -->
+          <!-- relative pour positionner le badge "Possédée" par-dessus -->
+          <div class="aspect-[3/4] relative overflow-hidden">
+            <img [src]="card.imageUrl" [alt]="card.name"
+                 class="w-full h-full object-cover" />
+
+            <!-- Overlay doré si la carte est dans la collection -->
+            @if (owns(card.id)) {
+              <!-- inset-0 couvre toute la zone image -->
+              <!-- backdrop pour assombrir légèrement l'image -->
+              <div class="absolute inset-0 flex items-end justify-center pb-2"
+                   style="background: rgba(11, 27, 50, 0.55);">
+                <!-- Badge "✓ Possédée" centré en bas de l'image -->
+                <span class="text-xs font-semibold px-2 py-0.5 rounded"
+                      style="background: rgba(176, 139, 58, 0.92); color: #0B1B32;">
+                  ✓ Possédée
+                </span>
+              </div>
+            }
+          </div>
+
+          <!-- ── Infos sous l'image ──────────────────────────────────────── -->
+          <!-- flex-1 : prend l'espace restant pour aligner le bouton en bas -->
+          <div class="p-2 flex flex-col gap-1 flex-1">
+
+            <!-- Nom de la carte : text-xs pour tenir dans une petite carte -->
+            <!-- leading-snug : interligne serré pour les noms longs -->
+            <p class="text-xs font-medium leading-snug" style="color: #F0E8D0;">
+              {{ card.name }}
+            </p>
+
+            <!-- Numéro de carte (ex: ST26-004) en gris discret -->
+            <p class="text-xs" style="color: #9AACC0;">{{ card.number }}</p>
+
+            <!-- Rareté colorée dynamiquement via rarityColor() -->
+            <!-- mt-auto pousse la rareté + bouton en bas de la carte -->
+            <span class="text-xs font-medium mt-auto" [style.color]="rarityColor(card.rarity)">
+              {{ card.rarity }}
+            </span>
+
+            <!-- Bouton "Ajouter" visible seulement si connecté et carte non possédée -->
+            @if (!owns(card.id) && auth.isLoggedIn()) {
+              <!-- btn-primary redéfini en petit : py-1 px-2 text-xs écrase les valeurs globales -->
+              <button (click)="addCard(card.id)"
+                      [disabled]="addingCardId() === card.id"
+                      class="btn-primary mt-1 text-xs py-1 px-2">
+                <!-- Texte qui change pendant l'ajout en cours -->
+                {{ addingCardId() === card.id ? 'Ajout…' : '+ Ajouter' }}
+              </button>
+            }
+
+          </div>
+        </div>
+      }
+
+    </div>
+  }
+
+</div>
