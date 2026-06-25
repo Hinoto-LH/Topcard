@@ -1,49 +1,189 @@
+<div class="px-5 lg:px-8 py-8 max-w-7xl mx-auto overflow-x-hidden">
 
-<h1>Ma collection</h1>
-
-<!-- Filtres : (change)="load()" recharge la liste dès qu'un filtre change -->
-<form (ngSubmit)="load()">
-  <input type="text" [(ngModel)]="search" name="search" placeholder="Rechercher une carte..." />
-
-  <!-- Liste déroulante des sets disponibles -->
-  <select [(ngModel)]="setId" name="setId" (change)="load()">
-    <option value="">Tous les sets</option>
-    @for (set of sets(); track set.id) {
-      <option [value]="set.id">{{ set.name }}</option>
-    }
-  </select>
-
-  <input type="text" [(ngModel)]="rarity" name="rarity" placeholder="Rareté..." (change)="load()" />
-
-  <button type="submit">Rechercher</button>
-</form>
-
-@if (loading()) {
-  <p>Chargement...</p>
-} @else {
-  @for (userCard of userCards(); track userCard.id) {
+  <!-- ── En-tête ─────────────────────────────────────────────────────────────── -->
+  <div class="flex items-end justify-between gap-4 mb-6 flex-wrap">
     <div>
-      <p>{{ userCard.card?.name }}</p>
-      <p>{{ userCard.card?.set?.name }}</p>
-
-      <!-- Input nombre lié à la quantité, appelle updateQuantity à chaque changement -->
-      <input
-        type="number"
-        [value]="userCard.quantity"
-        min="1"
-        (change)="updateQuantity(userCard.id, +$any($event.target).value)"
-      />
-
-      <button (click)="remove(userCard.id)">Supprimer</button>
-
-      <!-- Lien vers les cartes manquantes du set de cette carte -->
-      @if (userCard.card?.set?.id) {
-        <a [routerLink]="['/collection/missing', userCard.card!.set.id]">
-          Cartes manquantes
-        </a>
+      <h1 class="text-2xl font-bold" style="color: #F0E8D0;">Ma collection</h1>
+      <!-- Nombre de cartes mis à jour dès que la liste change, caché pendant le chargement -->
+      @if (!loading()) {
+        <p class="text-sm mt-1" style="color: #9AACC0;">
+          {{ userCards().length }} carte{{ userCards().length > 1 ? 's' : '' }}
+        </p>
       }
     </div>
-  } @empty {
-    <p>Aucune carte dans ta collection.</p>
+  </div>
+
+  <!-- ── Barre de filtres ───────────────────────────────────────────────────── -->
+  <!-- panel : fond #0F2444, bordure #1A3356, coins arrondis -->
+  <!-- flex-col sur mobile, flex-row sur sm+ pour aligner les champs en ligne -->
+  <form (ngSubmit)="load()" class="panel p-4 mb-6 flex flex-col sm:flex-row gap-3 flex-wrap">
+
+    <!-- Champ recherche : flex-1 pour qu'il prenne l'espace disponible -->
+    <div class="field flex-1 min-w-48">
+      <label for="search">Recherche</label>
+      <!-- relative pour positionner l'icône loupe à l'intérieur du champ -->
+      <div class="relative">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              style="color: #9AACC0;">
+          <ng-icon name="lucideSearch" size="15" />
+        </span>
+        <!-- pl-9 : espace à gauche pour ne pas superposer l'icône et le texte -->
+        <input id="search" type="text" [(ngModel)]="search" name="search"
+               placeholder="Nom de carte…" class="pl-9" />
+      </div>
+    </div>
+
+    <!-- Sélecteur de set : min-w-48 pour ne pas être trop étroit -->
+    <div class="field min-w-48">
+      <label for="setId">Set</label>
+      <!-- Le select hérite du style .field input défini dans styles.css -->
+      <select id="setId" [(ngModel)]="setId" name="setId" (change)="load()"
+              class="w-full px-4 py-3 rounded-lg text-sm outline-none transition-all duration-200"
+              style="background: rgba(255,255,255,0.04); border: 1px solid #1A3356;
+                     color: #F0E8D0; font-family: 'Inter', sans-serif;">
+        <option value="" style="background: #0F2444;">Tous les sets</option>
+        @for (set of sets(); track set.id) {
+          <option [value]="set.id" style="background: #0F2444;">{{ set.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Filtre rareté -->
+    <div class="field min-w-36">
+      <label for="rarity">Rareté</label>
+      <input id="rarity" type="text" [(ngModel)]="rarity" name="rarity"
+             placeholder="Common…" (change)="load()" />
+    </div>
+
+    <!-- Bouton recherche aligné en bas des champs grâce à self-end -->
+    <button type="submit"
+            class="btn-primary self-end"
+            style="width: auto; padding-left: 1.5rem; padding-right: 1.5rem;">
+      Rechercher
+    </button>
+
+  </form>
+
+  <!-- ── Chargement : squelettes ───────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      @for (_ of skeletons; track $index) {
+        <div class="panel overflow-hidden">
+          <div class="aspect-[3/4] animate-pulse" style="background: #1A3356;"></div>
+          <div class="p-2 space-y-2">
+            <div class="h-3 rounded animate-pulse" style="background: #1A3356; width: 80%;"></div>
+            <div class="h-2 rounded animate-pulse" style="background: #1A3356; width: 55%;"></div>
+            <div class="h-7 rounded animate-pulse mt-2" style="background: #1A3356;"></div>
+          </div>
+        </div>
+      }
+    </div>
+
+  } @else {
+
+    <!-- ── Grille des cartes ──────────────────────────────────────────────── -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+
+      @for (userCard of userCards(); track userCard.id) {
+        <div class="panel overflow-hidden flex flex-col">
+
+          <!-- Image de la carte -->
+          <div class="aspect-[3/4] overflow-hidden relative">
+            <img [src]="userCard.card?.imageUrl" [alt]="userCard.card?.name"
+                 class="w-full h-full object-cover" />
+
+            <!-- Badge quantité en haut à droite, visible si > 1 -->
+            @if (userCard.quantity > 1) {
+              <span class="absolute top-1.5 right-1.5 text-xs font-bold px-1.5 py-0.5 rounded"
+                    style="background: #ECD084; color: #0B1B32;">
+                ×{{ userCard.quantity }}
+              </span>
+            }
+          </div>
+
+          <!-- Infos + contrôles -->
+          <div class="p-2 flex flex-col gap-1.5 flex-1">
+
+            <!-- Nom de la carte -->
+            <p class="text-xs font-medium leading-snug" style="color: #F0E8D0;">
+              {{ userCard.card?.name }}
+            </p>
+
+            <!-- Nom du set en plus petit -->
+            <p class="text-xs leading-snug" style="color: #9AACC0;">
+              {{ userCard.card?.set?.name }}
+            </p>
+
+            <!-- Rareté colorée -->
+            <span class="text-xs font-medium" [style.color]="rarityColor(userCard.card?.rarity)">
+              {{ userCard.card?.rarity }}
+            </span>
+
+            <!-- Contrôle quantité : − valeur + sur une ligne -->
+            <!-- mt-auto pousse les contrôles en bas de la carte -->
+            <div class="flex items-center justify-between mt-auto pt-1.5"
+                 style="border-top: 1px solid #1A3356;">
+
+              <!-- Groupe −/+ -->
+              <div class="flex items-center gap-1">
+                <!-- Bouton décrémenter, désactivé si quantité = 1 -->
+                <button (click)="updateQuantity(userCard.id, userCard.quantity - 1)"
+                        [disabled]="userCard.quantity <= 1"
+                        class="w-6 h-6 rounded flex items-center justify-center text-sm font-bold transition-colors"
+                        style="background: #1A3356; color: #9AACC0; border: none; cursor: pointer;"
+                        [style.opacity]="userCard.quantity <= 1 ? '0.4' : '1'">
+                  −
+                </button>
+                <!-- Quantité actuelle -->
+                <span class="text-xs font-semibold w-5 text-center" style="color: #F0E8D0;">
+                  {{ userCard.quantity }}
+                </span>
+                <!-- Bouton incrémenter -->
+                <button (click)="updateQuantity(userCard.id, userCard.quantity + 1)"
+                        class="w-6 h-6 rounded flex items-center justify-center text-sm font-bold transition-colors"
+                        style="background: #1A3356; color: #9AACC0; border: none; cursor: pointer;">
+                  +
+                </button>
+              </div>
+
+              <!-- Bouton supprimer avec icône corbeille -->
+              <button (click)="remove(userCard.id)"
+                      class="w-6 h-6 rounded flex items-center justify-center transition-colors"
+                      style="background: rgba(220,38,38,0.12); color: #FCA5A5; border: none; cursor: pointer;"
+                      (mouseenter)="$any($event.currentTarget).style.background='rgba(220,38,38,0.25)'"
+                      (mouseleave)="$any($event.currentTarget).style.background='rgba(220,38,38,0.12)'">
+                <ng-icon name="lucideTrash2" size="13" />
+              </button>
+
+            </div>
+
+            <!-- Lien cartes manquantes du set -->
+            @if (userCard.card?.set?.id) {
+              <a [routerLink]="['/collection/missing', userCard.card!.set!.id]"
+                 class="text-xs text-center mt-1"
+                 style="color: #B08B3A; text-decoration: none;">
+                Cartes manquantes →
+              </a>
+            }
+
+          </div>
+        </div>
+      } @empty {
+
+        <!-- État vide : icône + message centré -->
+        <div class="col-span-full flex flex-col items-center justify-center py-20 gap-4">
+          <ng-icon name="lucidePackageOpen" size="48" style="color: #1A3356;" />
+          <div class="text-center">
+            <p class="font-semibold" style="color: #F0E8D0;">Collection vide</p>
+            <p class="text-sm mt-1" style="color: #9AACC0;">
+              Ajoute des cartes depuis la <a routerLink="/sets"
+              style="color: #ECD084; text-decoration: none;">page Sets</a>.
+            </p>
+          </div>
+        </div>
+
+      }
+    </div>
   }
-}
+
+</div>

@@ -1,12 +1,15 @@
 import { Component, inject, OnInit, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { RouterLink } from '@angular/router'
+import { NgIconComponent, provideIcons } from '@ng-icons/core'
+import { lucideTrash2, lucideSearch, lucidePackageOpen } from '@ng-icons/lucide'
 import { CollectionService } from '../../../services/collection'
 import { Set, UserCard } from '../../../models/models'
 
 @Component({
   selector: 'app-collection',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, NgIconComponent],
+  providers: [provideIcons({ lucideTrash2, lucideSearch, lucidePackageOpen })],
   templateUrl: './collection.html',
 })
 export class CollectionComponent implements OnInit {
@@ -42,18 +45,36 @@ export class CollectionComponent implements OnInit {
     })
   }
 
-  // Met à jour la quantité d'une carte et recharge la liste
+  skeletons = Array(8)
+
+  // Mise à jour optimiste : modifie le signal localement, puis synchro API en arrière-plan
   updateQuantity(id: number, quantity: number) {
     if (quantity < 1) return
+    this.userCards.update(cards =>
+      cards.map(uc => uc.id === id ? { ...uc, quantity } : uc)
+    )
     this.collectionService.updateQuantity(id, quantity).subscribe({
-      next: () => this.load(),
+      error: () => this.load(), // annule si l'API échoue
     })
   }
 
-  // Supprime une carte de la collection et recharge la liste
+  // Retire la carte du signal immédiatement, puis confirme côté API
   remove(id: number) {
+    this.userCards.update(cards => cards.filter(uc => uc.id !== id))
     this.collectionService.removeCard(id).subscribe({
-      next: () => this.load(),
+      error: () => this.load(),
     })
+  }
+
+  rarityColor(rarity: string | undefined): string {
+    const map: Record<string, string> = {
+      'Common':      '#9AACC0',
+      'Uncommon':    '#6DB8B8',
+      'Rare':        '#6B8AE4',
+      'Super Rare':  '#ECD084',
+      'Secret Rare': '#E06060',
+      'Leader':      '#E06060',
+    }
+    return map[rarity ?? ''] ?? '#9AACC0'
   }
 }
