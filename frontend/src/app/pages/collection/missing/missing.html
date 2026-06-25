@@ -1,20 +1,117 @@
-<a routerLink="/collection">← Retour à la collection</a>
+<div class="px-5 lg:px-8 py-8 max-w-7xl mx-auto overflow-x-hidden">
 
-@if (loading()) {
-  <p>Chargement...</p>
-} @else if (set()) {
-  <h1>Cartes manquantes — {{ set()!.name }}</h1>
-  <p>Complétion : {{ completion() }}%</p>
+  <!-- ── Lien retour ─────────────────────────────────────────────────────────── -->
+  <a routerLink="/collection"
+     class="inline-flex items-center gap-2 text-sm mb-6"
+     style="color: #9AACC0; text-decoration: none;">
+    ← Retour à la collection
+  </a>
 
-  @if (missCards().length === 0) {
-    <p>Set complet !</p>
-  } @else {
-    @for (card of missCards(); track card.id) {
-      <div>
-        <img [src]="card.imageUrl" [alt]="card.name" />
-        <p>{{ card.name }}</p>
-        <p>{{ card.number }} — {{ card.rarity }}</p>
+  <!-- ── Chargement ─────────────────────────────────────────────────────────── -->
+  @if (loading()) {
+
+    <div class="mb-8 space-y-3">
+      <div class="h-7 w-72 rounded animate-pulse" style="background: #1A3356;"></div>
+      <div class="h-3 w-48 rounded-full animate-pulse" style="background: #1A3356;"></div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      @for (_ of skeletons; track $index) {
+        <div class="panel overflow-hidden">
+          <div class="aspect-[3/4] animate-pulse" style="background: #1A3356;"></div>
+          <div class="p-2 space-y-2">
+            <div class="h-3 rounded animate-pulse" style="background: #1A3356; width: 80%;"></div>
+            <div class="h-2 rounded animate-pulse" style="background: #1A3356; width: 50%;"></div>
+          </div>
+        </div>
+      }
+    </div>
+
+  } @else if (set()) {
+
+    <!-- ── Header ─────────────────────────────────────────────────────────────── -->
+    <div class="mb-8">
+      <div class="flex items-start justify-between gap-4 flex-wrap mb-3">
+        <div>
+          <!-- Sous-titre contextuel au-dessus du nom du set -->
+          <p class="text-xs font-semibold tracking-widest uppercase mb-1" style="color: #B08B3A;">
+            Cartes manquantes
+          </p>
+          <h1 class="text-2xl font-bold break-words" style="color: #F0E8D0;">
+            {{ set()!.name }}
+          </h1>
+        </div>
+
+        <!-- Badge nombre de cartes manquantes -->
+        @if (missCards().length > 0) {
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0"
+                style="background: rgba(220,38,38,0.12);
+                       border: 1px solid rgba(220,38,38,0.3);
+                       color: #FCA5A5;">
+            {{ missCards().length }} manquante{{ missCards().length > 1 ? 's' : '' }}
+          </span>
+        }
+      </div>
+
+      <!-- Barre de complétion -->
+      <div class="flex items-center gap-3">
+        <div class="flex-1 max-w-xs h-2 rounded-full" style="background: #1A3356;">
+          <div class="h-2 rounded-full transition-all duration-500"
+               style="background: linear-gradient(90deg, #B08B3A, #ECD084);"
+               [style.width]="completion() + '%'">
+          </div>
+        </div>
+        <span class="text-sm font-semibold" style="color: #ECD084;">{{ completion() }}%</span>
+      </div>
+    </div>
+
+    <!-- ── Set complet ────────────────────────────────────────────────────────── -->
+    @if (missCards().length === 0) {
+      <div class="flex flex-col items-center justify-center py-20 gap-4 text-center">
+        <!-- Trophée textuel pour marquer l'accomplissement -->
+        <span class="text-6xl">🏆</span>
+        <div>
+          <p class="text-xl font-bold" style="color: #ECD084;">Set complet !</p>
+          <p class="text-sm mt-2" style="color: #9AACC0;">
+            Tu possèdes toutes les cartes de ce set.
+          </p>
+        </div>
+        <a routerLink="/collection"
+           class="btn-primary mt-2"
+           style="width: auto; padding-left: 1.5rem; padding-right: 1.5rem; text-decoration: none;">
+          Retour à la collection
+        </a>
+      </div>
+
+    } @else {
+
+      <!-- ── Grille des cartes manquantes ──────────────────────────────────── -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        @for (card of missCards(); track card.id) {
+
+          <!-- Opacité réduite pour rappeler visuellement que ces cartes sont absentes -->
+          <div class="panel overflow-hidden flex flex-col" style="opacity: 0.75;">
+
+            <div class="aspect-[3/4] overflow-hidden">
+              <img [src]="card.imageUrl" [alt]="card.name"
+                   class="w-full h-full object-cover"
+                   style="filter: grayscale(30%);" />
+            </div>
+
+            <div class="p-2 flex flex-col gap-1">
+              <p class="text-xs font-medium leading-snug" style="color: #F0E8D0;">
+                {{ card.name }}
+              </p>
+              <p class="text-xs" style="color: #9AACC0;">{{ card.number }}</p>
+              <span class="text-xs font-medium" [style.color]="rarityColor(card.rarity)">
+                {{ card.rarity }}
+              </span>
+            </div>
+
+          </div>
+        }
       </div>
     }
   }
-}
+
+</div>
