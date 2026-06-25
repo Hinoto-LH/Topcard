@@ -17,6 +17,8 @@ export class SignupComponent implements OnInit, OnDestroy {
   private router = inject(Router)
   private layout = inject(LayoutService)
 
+  // Masque la navbar à l'entrée et la restaure à la sortie —
+  // la page signup utilise un layout plein écran sans navbar.
   ngOnInit()    { this.layout.showNav.set(false) }
   ngOnDestroy() { this.layout.showNav.set(true) }
 

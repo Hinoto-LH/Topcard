@@ -24,6 +24,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   error = signal<string | null>(null)
   loading = signal(false)
 
+  // Masque la navbar à l'entrée et la restaure à la sortie —
+  // la page login utilise un layout plein écran sans navbar.
   ngOnInit()    { this.layout.showNav.set(false) }
   ngOnDestroy() { this.layout.showNav.set(true) }
 

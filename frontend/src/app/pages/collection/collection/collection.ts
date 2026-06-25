@@ -18,8 +18,10 @@ export class CollectionComponent implements OnInit {
   userCards = signal<UserCard[]>([])
   sets = signal<Set[]>([])
   loading = signal(true)
+  skeletons = Array(8)
 
-  // Valeurs des filtres liées aux inputs via [(ngModel)]
+  // Valeurs des filtres — simples propriétés (pas des signals) car elles sont
+  // liées à des inputs via [(ngModel)] qui gère lui-même la réactivité.
   search = ''
   setId = ''
   rarity = ''
@@ -28,10 +30,11 @@ export class CollectionComponent implements OnInit {
     this.load()
   }
 
-  // Recharge la collection avec les filtres courants
   load() {
     this.loading.set(true)
     this.collectionService.getCollection({
+      // On passe undefined plutôt qu'une chaîne vide pour ne pas envoyer
+      // le paramètre dans l'URL quand le filtre est vide.
       search: this.search || undefined,
       setId: this.setId ? Number(this.setId) : undefined,
       rarity: this.rarity || undefined,
@@ -45,20 +48,20 @@ export class CollectionComponent implements OnInit {
     })
   }
 
-  skeletons = Array(8)
-
-  // Mise à jour optimiste : modifie le signal localement, puis synchro API en arrière-plan
+  // Mise à jour optimiste : on modifie le signal immédiatement pour un retour
+  // visuel instantané, puis on confirme en arrière-plan. Si l'API échoue,
+  // this.load() recharge l'état réel depuis le serveur.
   updateQuantity(id: number, quantity: number) {
     if (quantity < 1) return
     this.userCards.update(cards =>
       cards.map(uc => uc.id === id ? { ...uc, quantity } : uc)
     )
     this.collectionService.updateQuantity(id, quantity).subscribe({
-      error: () => this.load(), // annule si l'API échoue
+      error: () => this.load(),
     })
   }
 
-  // Retire la carte du signal immédiatement, puis confirme côté API
+  // Même pattern optimiste que updateQuantity.
   remove(id: number) {
     this.userCards.update(cards => cards.filter(uc => uc.id !== id))
     this.collectionService.removeCard(id).subscribe({

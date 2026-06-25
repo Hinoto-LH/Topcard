@@ -11,6 +11,7 @@ export default class SyncsController {
     }
 
     // Déclenche la synchronisation de tous les sets One Piece depuis l'API externe.
+    // SyncService est instancié par requête (pas en singleton) car il n'a pas d'état.
     async syncSets({ response }: HttpContext) {
         const service = new SyncService()
         try {

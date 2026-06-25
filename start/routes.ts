@@ -11,7 +11,8 @@ import { middleware } from '#start/kernel'
 import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
 
-// Route Admin
+// Routes admin : double middleware — auth() vérifie la connexion, admin() vérifie le rôle.
+// Les POST /admin/sync/* sont exemptés du CSRF dans config/shield.ts (appels API internes).
 router
   .group(() => {
     router.get('/admin/sync', [controllers.Syncs, 'index'])
@@ -39,7 +40,8 @@ router
 })
 .use(middleware.auth())
 
-// Route Set
+// Routes sets : publiques — silent_auth_middleware peuple auth.user si connecté
+// pour que show() puisse calculer la complétion sans bloquer les visiteurs.
 router.group(() => {
   router.get('/sets', [controllers.Sets, 'index'])
   router.get('/sets/:id', [controllers.Sets, 'show'])

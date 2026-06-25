@@ -13,15 +13,23 @@ export class SetDetailComponent implements OnInit {
   private route = inject(ActivatedRoute)
   private setsService = inject(SetsService)
   private collectionService = inject(CollectionService)
+  // auth est public car le template en a besoin pour isLoggedIn() et isAdmin()
   auth = inject(AuthService)
 
   set = signal<SetWithCards | null>(null)
+  // Liste des cardId possédés par l'utilisateur pour ce set — évite de charger
+  // les objets Card complets, on compare juste des ids.
   ownerCardsIds = signal<number[]>([])
   completion = signal(0)
   loading = signal(true)
+  // Id de la carte en cours d'ajout — permet de désactiver uniquement son bouton
+  // plutôt que tous les boutons du set pendant l'appel API.
   addingCardId = signal<number | null>(null)
+  skeletons = Array(12)
 
   ngOnInit() {
+    // snapshot.paramMap : lecture unique du paramètre d'URL au moment du chargement.
+    // Convient ici car on ne navigue jamais entre deux set-detail sans quitter la route.
     const id = Number(this.route.snapshot.paramMap.get('id'))
     this.setsService.getById(id).subscribe({
       next: ({ set, ownerCardsIds, completion }) => {
@@ -34,23 +42,19 @@ export class SetDetailComponent implements OnInit {
     })
   }
 
-  // 12 squelettes pour imiter une grille de cartes pendant le chargement
-  skeletons = Array(12)
-
   owns(cardId: number) {
     return this.ownerCardsIds().includes(cardId)
   }
 
-  // Couleur associée à chaque rareté One Piece TCG
   rarityColor(rarity: string): string {
     const map: Record<string, string> = {
-      'Common':       '#9AACC0',
-      'Uncommon':     '#6DB8B8',
-      'Rare':         '#6B8AE4',
-      'Super Rare':   '#ECD084',
-      'Secret Rare':  '#E06060',
-      'Leader':       '#E06060',
-      'DON!!':        '#E06060',
+      'Common':      '#9AACC0',
+      'Uncommon':    '#6DB8B8',
+      'Rare':        '#6B8AE4',
+      'Super Rare':  '#ECD084',
+      'Secret Rare': '#E06060',
+      'Leader':      '#E06060',
+      'DON!!':       '#E06060',
     }
     return map[rarity] ?? '#9AACC0'
   }
@@ -59,6 +63,7 @@ export class SetDetailComponent implements OnInit {
     this.addingCardId.set(cardId)
     this.collectionService.addCard(cardId).subscribe({
       next: () => {
+        // Mise à jour optimiste : ajoute l'id localement sans recharger toute la page
         this.ownerCardsIds.update(ids => [...ids, cardId])
         this.addingCardId.set(null)
       },

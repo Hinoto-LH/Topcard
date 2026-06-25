@@ -31,6 +31,7 @@ export class MissingComponent implements OnInit {
   }
 
   ngOnInit() {
+    // L'id dans l'URL correspond à l'id du set (pas d'une carte).
     const id = Number(this.route.snapshot.paramMap.get('id'))
     this.collectionService.getMissing(id).subscribe({
       next: ({ set, missCards, completion }) => {

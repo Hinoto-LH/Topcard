@@ -17,7 +17,8 @@ export class App {
   layout = inject(LayoutService)
   private router = inject(Router)
 
-  // Contrôle l'ouverture du menu mobile
+  // État du menu hamburger mobile — signal car le template s'y abonne
+  // pour afficher/masquer le drawer sans passer par le ChangeDetector.
   menuOpen = signal(false)
   toggleMenu() { this.menuOpen.update((v) => !v) }
   closeMenu() { this.menuOpen.set(false) }
@@ -28,7 +29,8 @@ export class App {
   }
 
   ngOnInit() {
-    // Ferme le menu mobile à chaque navigation
+    // Ferme le menu mobile à chaque navigation pour éviter qu'il reste ouvert
+    // après un clic sur un lien (la page change mais le drawer resterait visible).
     this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
       this.menuOpen.set(false)
     })

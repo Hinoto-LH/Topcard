@@ -13,7 +13,8 @@ export class SetsListComponent implements OnInit {
 
   sets = signal<Set[]>([])
   loading = signal(true)
-  // 8 emplacements vides pour les squelettes de chargement
+  // Tableau vide de 8 éléments : sert uniquement à boucler 8 fois dans @for
+  // pour afficher 8 cartes squelettes pendant le chargement.
   skeletons = Array(8)
 
   ngOnInit() {

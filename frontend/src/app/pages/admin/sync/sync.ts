@@ -7,6 +7,8 @@ import { Set } from '../../../models/models'
 @Component({
   selector: 'app-sync',
   imports: [NgIconComponent],
+  // provideIcons déclare les icônes disponibles dans ce composant uniquement —
+  // elles ne sont pas disponibles globalement, ce qui limite la taille du bundle.
   providers: [provideIcons({ lucideRefreshCw, lucideCheckCircle, lucideAlertCircle, lucideDatabase })],
   templateUrl: './sync.html',
 })
@@ -15,9 +17,10 @@ export class SyncComponent implements OnInit {
 
   sets = signal<Set[]>([])
   message = signal<{ text: string; type: 'success' | 'error' } | null>(null)
-  // true uniquement pendant la sync globale des sets
+  // Deux signaux séparés pour distinguer la sync globale (tous les sets)
+  // de la sync unitaire (cartes d'un set). Cela permet de n'animer que
+  // le bouton concerné plutôt que de tout bloquer avec un seul loading.
   syncingSets = signal(false)
-  // ID du set dont les cartes sont en cours de sync (null si aucun)
   syncingSetId = signal<number | null>(null)
 
   ngOnInit() {
@@ -33,6 +36,7 @@ export class SyncComponent implements OnInit {
       next: ({ synced }) => {
         this.message.set({ text: `${synced} sets synchronisés`, type: 'success' })
         this.syncingSets.set(false)
+        // Recharge la liste après sync pour afficher les nouveaux sets
         this.syncService.getSets().subscribe(({ sets }) => this.sets.set(sets))
       },
       error: (err) => {

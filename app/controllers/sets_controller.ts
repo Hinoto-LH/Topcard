@@ -3,11 +3,16 @@ import UserCard from '#models/user_card'
 import CardSet from '#models/set'
 
 export default class SetsController {
+
+  // Liste tous les sets sans leurs cartes — le chargement des cartes se fait
+  // à la demande dans show() pour alléger cette réponse.
   async index({ response }: HttpContext) {
     const sets = await CardSet.all()
     return response.json({ sets })
   }
 
+  // Route publique : silent_auth_middleware (global) peuple auth.user si une session
+  // existe, sans bloquer les visiteurs non connectés (ownerCardsIds restera []).
   async show({ auth, params, response }: HttpContext) {
     const user = auth.user
 
@@ -24,6 +29,8 @@ export default class SetsController {
 
     const completion = set.cards.length > 0 ? Math.round((ownedInSet / set.cards.length) * 100) : 0
 
+    // serialize() au lieu de SetTransformer.transform() : le transformer enveloppait
+    // la réponse dans { $type, transformerData } qu'Angular ne sait pas désérialiser.
     return response.json({
       set: set.serialize(),
       ownerCardsIds,
