@@ -1,24 +1,113 @@
-<h1>Synchronisation</h1>
+<div class="px-5 lg:px-8 py-8 max-w-4xl mx-auto overflow-x-hidden">
 
-<!-- Message de retour après une sync (succès ou erreur) -->
-@if (message()) {
-  <p>{{ message()!.text }}</p>
-}
+  <!-- ── En-tête ─────────────────────────────────────────────────────────────── -->
+  <div class="mb-8">
+    <p class="text-xs font-semibold tracking-widest uppercase mb-1" style="color: #B08B3A;">
+      Administration
+    </p>
+    <h1 class="text-2xl font-bold" style="color: #F0E8D0;">Synchronisation</h1>
+    <p class="text-sm mt-1" style="color: #9AACC0;">
+      Importe les sets et les cartes depuis l'API externe.
+    </p>
+  </div>
 
-<button (click)="syncSets()" [disabled]="loading()">
-  {{ loading() ? 'Synchronisation...' : 'Synchroniser tous les sets' }}
-</button>
+  <!-- ── Message retour (succès / erreur) ──────────────────────────────────── -->
+  @if (message()) {
+    <div class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm mb-6"
+         [style.background]="message()!.type === 'success'
+           ? 'rgba(34,197,94,0.1)' : 'rgba(220,38,38,0.12)'"
+         [style.border]="message()!.type === 'success'
+           ? '1px solid rgba(34,197,94,0.3)' : '1px solid rgba(220,38,38,0.35)'"
+         [style.color]="message()!.type === 'success' ? '#86efac' : '#fca5a5'">
+      <ng-icon [name]="message()!.type === 'success' ? 'lucideCheckCircle' : 'lucideAlertCircle'"
+               size="16" />
+      {{ message()!.text }}
+    </div>
+  }
 
-<h2>Sets en base ({{ sets().length }})</h2>
-
-@for (set of sets(); track set.id) {
-  <div>
-    <span>{{ set.name }} ({{ set.code }})</span>
-    <!-- Bouton pour synchroniser les cartes d'un set spécifique -->
-    <button (click)="syncCards(set.id)" [disabled]="loading()">
-      Sync cartes
+  <!-- ── Action principale : sync de tous les sets ─────────────────────────── -->
+  <div class="panel p-5 mb-6 flex items-center justify-between gap-4 flex-wrap">
+    <div>
+      <p class="text-sm font-semibold" style="color: #F0E8D0;">Synchroniser les sets</p>
+      <p class="text-xs mt-0.5" style="color: #9AACC0;">
+        Récupère la liste complète des sets depuis l'API.
+      </p>
+    </div>
+    <!-- Bouton principal, désactivé si une sync de sets OU de cartes est en cours -->
+    <button (click)="syncSets()"
+            [disabled]="syncingSets() || syncingSetId() !== null"
+            class="btn-primary"
+            style="width: auto; padding-left: 1.25rem; padding-right: 1.25rem;">
+      <!-- Icône qui tourne pendant le chargement grâce à animate-spin -->
+      <ng-icon name="lucideRefreshCw" size="15"
+               [class.animate-spin]="syncingSets()" />
+      {{ syncingSets() ? 'Synchronisation…' : 'Lancer la sync' }}
     </button>
   </div>
-} @empty {
-  <p>Aucun set en base. Lance une sync pour commencer.</p>
-}
+
+  <!-- ── Liste des sets ──────────────────────────────────────────────────────── -->
+  <div class="panel overflow-hidden">
+
+    <!-- En-tête du tableau -->
+    <div class="flex items-center gap-2 px-5 py-3"
+         style="border-bottom: 1px solid #1A3356;">
+      <ng-icon name="lucideDatabase" size="15" style="color: #9AACC0;" />
+      <span class="text-sm font-semibold" style="color: #F0E8D0;">
+        Sets en base
+      </span>
+      <!-- Badge avec le nombre de sets -->
+      <span class="text-xs font-semibold px-2 py-0.5 rounded-full ml-auto"
+            style="background: rgba(236,208,132,0.1);
+                   border: 1px solid rgba(236,208,132,0.2);
+                   color: #ECD084;">
+        {{ sets().length }}
+      </span>
+    </div>
+
+    @if (sets().length === 0) {
+      <!-- État vide -->
+      <div class="flex flex-col items-center justify-center py-12 gap-2 text-center">
+        <ng-icon name="lucideDatabase" size="32" style="color: #1A3356;" />
+        <p class="text-sm" style="color: #9AACC0;">
+          Aucun set en base — lance une sync pour commencer.
+        </p>
+      </div>
+
+    } @else {
+      <!-- Lignes de sets -->
+      @for (set of sets(); track set.id) {
+        <!-- border-bottom sur toutes les lignes sauf la dernière -->
+        <div class="flex items-center justify-between gap-4 px-5 py-3"
+             [style.border-bottom]="!$last ? '1px solid #1A3356' : 'none'">
+
+          <div class="min-w-0">
+            <!-- Nom du set : truncate évite le débordement sur petits écrans -->
+            <p class="text-sm font-medium truncate" style="color: #F0E8D0;">
+              {{ set.name }}
+            </p>
+            <p class="text-xs mt-0.5" style="color: #9AACC0;">
+              {{ set.totalCards ?? '—' }} cartes · {{ set.code }}
+            </p>
+          </div>
+
+          <!-- Bouton "Sync cartes" par ligne -->
+          <!-- Désactivé si une autre opération est en cours -->
+          <button (click)="syncCards(set.id)"
+                  [disabled]="syncingSets() || syncingSetId() !== null"
+                  class="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+                  style="background: rgba(176,139,58,0.12);
+                         border: 1px solid rgba(176,139,58,0.3);
+                         color: #ECD084; cursor: pointer;"
+                  [style.opacity]="(syncingSets() || (syncingSetId() !== null && syncingSetId() !== set.id)) ? '0.4' : '1'">
+            <!-- Spinner uniquement sur le set en cours de sync -->
+            <ng-icon name="lucideRefreshCw" size="13"
+                     [class.animate-spin]="syncingSetId() === set.id" />
+            {{ syncingSetId() === set.id ? 'Sync…' : 'Sync cartes' }}
+          </button>
+
+        </div>
+      }
+    }
+  </div>
+
+</div>

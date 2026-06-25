@@ -1,10 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core'
+import { NgIconComponent, provideIcons } from '@ng-icons/core'
+import { lucideRefreshCw, lucideCheckCircle, lucideAlertCircle, lucideDatabase } from '@ng-icons/lucide'
 import { SyncService } from '../../../services/sync'
 import { Set } from '../../../models/models'
 
 @Component({
   selector: 'app-sync',
-  imports: [],
+  imports: [NgIconComponent],
+  providers: [provideIcons({ lucideRefreshCw, lucideCheckCircle, lucideAlertCircle, lucideDatabase })],
   templateUrl: './sync.html',
 })
 export class SyncComponent implements OnInit {
@@ -12,7 +15,10 @@ export class SyncComponent implements OnInit {
 
   sets = signal<Set[]>([])
   message = signal<{ text: string; type: 'success' | 'error' } | null>(null)
-  loading = signal(false)
+  // true uniquement pendant la sync globale des sets
+  syncingSets = signal(false)
+  // ID du set dont les cartes sont en cours de sync (null si aucun)
+  syncingSetId = signal<number | null>(null)
 
   ngOnInit() {
     this.syncService.getSets().subscribe({
@@ -20,33 +26,33 @@ export class SyncComponent implements OnInit {
     })
   }
 
-  // Lance la sync de tous les sets et affiche le résultat
   syncSets() {
-    this.loading.set(true)
+    this.syncingSets.set(true)
+    this.message.set(null)
     this.syncService.syncSets().subscribe({
       next: ({ synced }) => {
         this.message.set({ text: `${synced} sets synchronisés`, type: 'success' })
-        this.loading.set(false)
+        this.syncingSets.set(false)
         this.syncService.getSets().subscribe(({ sets }) => this.sets.set(sets))
       },
       error: (err) => {
         this.message.set({ text: err.error?.error ?? 'Erreur lors de la sync', type: 'error' })
-        this.loading.set(false)
+        this.syncingSets.set(false)
       },
     })
   }
 
-  // Lance la sync des cartes d'un set spécifique
   syncCards(setId: number) {
-    this.loading.set(true)
+    this.syncingSetId.set(setId)
+    this.message.set(null)
     this.syncService.syncCards(setId).subscribe({
       next: ({ synced }) => {
         this.message.set({ text: `${synced} cartes synchronisées`, type: 'success' })
-        this.loading.set(false)
+        this.syncingSetId.set(null)
       },
       error: (err) => {
         this.message.set({ text: err.error?.error ?? 'Erreur lors de la sync', type: 'error' })
-        this.loading.set(false)
+        this.syncingSetId.set(null)
       },
     })
   }
