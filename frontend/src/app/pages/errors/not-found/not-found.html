@@ -1,3 +1,20 @@
-<h1>404 — Page introuvable</h1>
-<p>La page que tu cherches n'existe pas.</p>
-<a routerLink="/sets">Retour aux sets</a>
+<div class="min-h-screen flex flex-col items-center justify-center px-5 text-center"
+     style="background: #0B1B32;">
+
+  <!-- Numéro d'erreur en très grand, rôle décoratif -->
+  <p class="text-8xl font-black mb-2" style="color: #1A3356;">404</p>
+
+  <h1 class="text-2xl font-bold mb-3" style="color: #F0E8D0;">Page introuvable</h1>
+
+  <p class="text-sm max-w-xs mb-8 break-words" style="color: #9AACC0;">
+    Cette page n'existe pas ou a été déplacée.<br />
+    Retourne aux sets et continue ta collection.
+  </p>
+
+  <a routerLink="/sets"
+     class="btn-primary"
+     style="width: auto; padding-left: 1.5rem; padding-right: 1.5rem; text-decoration: none;">
+    Retour aux sets
+  </a>
+
+</div>
