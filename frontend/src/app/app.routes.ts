@@ -4,8 +4,8 @@ import { authGuard, adminGuard, guestGuard } from './guards/auth.guard'
 // loadComponent = lazy loading : le bundle JS du composant n'est téléchargé
 // que lorsque l'utilisateur navigue vers la route. Réduit le bundle initial.
 export const routes: Routes = [
-  // Redirige la racine vers /sets (page d'accueil publique)
-  { path: '', redirectTo: 'sets', pathMatch: 'full' },
+  // Page d'accueil publique (landing page)
+  { path: '', loadComponent: () => import('./pages/home/home').then(m => m.Home) },
 
   // Routes guest : inaccessibles si déjà connecté (redirige vers /sets)
   { path: 'login',  loadComponent: () => import('./pages/auth/login/login').then(m => m.LoginComponent),   canActivate: [guestGuard] },

@@ -1,1 +1,130 @@
-<p>home works!</p>
+<!-- ── Section hero ───────────────────────────────────────────────────────────── -->
+<!-- min-h-screen : occupe au moins toute la hauteur de la fenêtre -->
+<!-- pt-16 : compense la navbar fixe (64px) -->
+<section class="min-h-screen flex items-center pt-16"
+         style="background: linear-gradient(160deg, #0F2444 0%, #0B1B32 60%);">
+
+  <div class="px-5 lg:px-8 py-16 max-w-7xl mx-auto w-full">
+
+    <!-- Deux colonnes sur desktop : texte à gauche, aperçu des sets à droite -->
+    <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+
+      <!-- ── Colonne gauche : texte ──────────────────────────────────────── -->
+      <div class="flex-1 space-y-6">
+
+        <!-- Label contextuel au-dessus du titre -->
+        <p class="text-xs font-semibold tracking-widest uppercase" style="color: #B08B3A;">
+          ⚓ Collection One Piece TCG
+        </p>
+
+        <!-- Titre principal : le mot clé "journal de bord" en or -->
+        <h1 class="text-4xl lg:text-5xl font-black leading-tight" style="color: #F0E8D0;">
+          Tes cartes,<br />
+          ton équipage,<br />
+          ton <span style="color: #ECD084;">journal de bord.</span>
+        </h1>
+
+        <p class="text-base leading-relaxed max-w-md break-words" style="color: #9AACC0;">
+          Coche les cartes que tu possèdes, compte tes doublons,
+          suis ta progression set par set — synchronisée sur tous tes appareils.
+        </p>
+
+        <!-- CTAs : s'adaptent selon l'état de connexion -->
+        <div class="flex flex-wrap gap-3">
+          @if (auth.isLoggedIn()) {
+            <!-- Utilisateur connecté -->
+            <a routerLink="/collection" class="btn-primary"
+               style="width: auto; padding-left: 1.5rem; padding-right: 1.5rem; text-decoration: none;">
+              Ma collection →
+            </a>
+          } @else {
+            <!-- Visiteur non connecté -->
+            <a routerLink="/signup" class="btn-primary"
+               style="width: auto; padding-left: 1.5rem; padding-right: 1.5rem; text-decoration: none;">
+              Créer un compte →
+            </a>
+          }
+
+          <!-- Bouton secondaire toujours visible -->
+          <a routerLink="/sets" class="btn-secondary"
+             style="width: auto; padding-left: 1.5rem; padding-right: 1.5rem; text-decoration: none;">
+            Explorer les sets
+          </a>
+        </div>
+
+        <!-- Badges de réassurance -->
+        <div class="flex gap-6 text-xs" style="color: #9AACC0;">
+          <span>✓ Gratuit</span>
+          <span>✓ Export CSV</span>
+          <span>✓ Sans publicité</span>
+        </div>
+
+      </div>
+
+      <!-- ── Colonne droite : aperçu des sets ───────────────────────────── -->
+      <!-- hidden lg:block : visible uniquement sur desktop pour ne pas surcharger mobile -->
+      <div class="hidden lg:block flex-1">
+        <div class="grid grid-cols-2 gap-3">
+          @for (set of sets(); track set.id) {
+            <!-- Même style que les cartes de la page sets-list -->
+            <a [routerLink]="['/sets', set.id]"
+               class="panel p-4 flex flex-col gap-2 transition-colors duration-200"
+               style="text-decoration: none; border-color: #1A3356;"
+               (mouseenter)="$any($event.currentTarget).style.borderColor='#B08B3A'"
+               (mouseleave)="$any($event.currentTarget).style.borderColor='#1A3356'">
+              <p class="text-xs font-semibold leading-snug" style="color: #F0E8D0;">
+                {{ set.name }}
+              </p>
+              <p class="text-xs mt-auto" style="color: #9AACC0;">
+                {{ set.totalCards ?? '—' }} cartes
+              </p>
+            </a>
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Section "Comment ça marche" ───────────────────────────────────────────── -->
+<section class="px-5 lg:px-8 py-16 max-w-7xl mx-auto">
+
+  <h2 class="text-xl font-bold mb-10 text-center" style="color: #F0E8D0;">
+    Comment ça marche ?
+  </h2>
+
+  <!-- 3 étapes en colonnes : 1 sur mobile, 3 sur desktop -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <!-- Étape 1 -->
+    <div class="panel p-6 flex flex-col gap-3">
+      <!-- Numéro en grand pour identifier l'étape visuellement -->
+      <span class="text-3xl font-black" style="color: #1A3356;">01</span>
+      <p class="text-sm font-semibold" style="color: #F0E8D0;">Choisis un set</p>
+      <p class="text-sm leading-relaxed" style="color: #9AACC0;">
+        Sélectionne l'extension que tu collectionnes. Toutes les cartes apparaissent grisées.
+      </p>
+    </div>
+
+    <!-- Étape 2 -->
+    <div class="panel p-6 flex flex-col gap-3">
+      <span class="text-3xl font-black" style="color: #1A3356;">02</span>
+      <p class="text-sm font-semibold" style="color: #F0E8D0;">Coche tes possessions</p>
+      <p class="text-sm leading-relaxed" style="color: #9AACC0;">
+        Un check rapide, ça ajoute la carte et le nombre de copies pour gérer tes doublons.
+      </p>
+    </div>
+
+    <!-- Étape 3 -->
+    <div class="panel p-6 flex flex-col gap-3">
+      <span class="text-3xl font-black" style="color: #1A3356;">03</span>
+      <p class="text-sm font-semibold" style="color: #F0E8D0;">Suis ta progression</p>
+      <p class="text-sm leading-relaxed" style="color: #9AACC0;">
+        % du set complété, doublons à échanger, sets complétés — tout en un coup d'œil.
+      </p>
+    </div>
+
+  </div>
+
+</section>
