@@ -31,6 +31,14 @@
              (mouseleave)="$event.target && ($any($event.target).style.color='#9AACC0')">
             Ma collection
           </a>
+          <a routerLink="/profile"
+             routerLinkActive="font-semibold"
+             class="text-sm transition-colors duration-200"
+             style="color: #9AACC0;"
+             (mouseenter)="$event.target && ($any($event.target).style.color='#ECD084')"
+             (mouseleave)="$event.target && ($any($event.target).style.color='#9AACC0')">
+            Profil
+          </a>
         }
       </div>
 
@@ -94,6 +102,11 @@
              class="flex items-center px-3 py-3 rounded-lg text-sm font-medium"
              style="color: #F0E8D0; text-decoration: none;">
             Ma collection
+          </a>
+          <a routerLink="/profile" (click)="closeMenu()"
+             class="flex items-center px-3 py-3 rounded-lg text-sm font-medium"
+             style="color: #F0E8D0; text-decoration: none;">
+            Profil
           </a>
 
           @if (auth.isAdmin()) {

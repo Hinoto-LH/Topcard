@@ -1,0 +1,175 @@
+<div class="px-5 lg:px-8 py-10 max-w-4xl mx-auto space-y-8">
+
+  @if (error()) {
+    <div class="panel p-5 text-sm" style="color: #FCA5A5; border-color: rgba(220,38,38,0.35);">
+      {{ error() }}
+    </div>
+  }
+
+  <!-- ── En-tête utilisateur ─────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="panel p-6 flex items-center gap-5 animate-pulse">
+      <div class="w-16 h-16 rounded-full" style="background: #1A3356;"></div>
+      <div class="space-y-2 flex-1">
+        <div class="h-5 w-40 rounded" style="background: #1A3356;"></div>
+        <div class="h-3 w-24 rounded" style="background: #1A3356;"></div>
+      </div>
+    </div>
+  } @else if (data()) {
+    <div class="panel p-6 flex items-center gap-5">
+      <!-- Avatar initiales -->
+      <div class="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 text-xl font-black"
+           style="background: linear-gradient(135deg, #B08B3A, #ECD084); color: #0B1B32;">
+        {{ data()!.user.firstName.charAt(0).toUpperCase() }}
+      </div>
+      <div>
+        <h1 class="text-xl font-bold" style="color: #F0E8D0;">
+          {{ data()!.user.firstName }}
+        </h1>
+        <p class="text-sm" style="color: #9AACC0;">
+          {{ '@' + data()!.user.username }}
+        </p>
+        <p class="text-xs mt-1" style="color: #6B7E93;">
+          {{ data()!.user.email }}
+        </p>
+      </div>
+    </div>
+  }
+
+  <!-- ── Grille de stats ──────────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      @for (_ of skeletons; track $index) {
+        <div class="panel p-5 animate-pulse space-y-2">
+          <div class="h-8 w-12 rounded" style="background: #1A3356;"></div>
+          <div class="h-3 w-24 rounded" style="background: #1A3356;"></div>
+        </div>
+      }
+    </div>
+  } @else if (data()) {
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+
+      <div class="panel p-5">
+        <p class="text-3xl font-black" style="color: #ECD084;">
+          {{ data()!.stats.uniqueCards }}
+        </p>
+        <p class="text-xs mt-1" style="color: #9AACC0;">Cartes uniques</p>
+      </div>
+
+      <div class="panel p-5">
+        <p class="text-3xl font-black" style="color: #ECD084;">
+          {{ data()!.stats.totalWithDuplicates }}
+        </p>
+        <p class="text-xs mt-1" style="color: #9AACC0;">Total avec doublons</p>
+      </div>
+
+      <div class="panel p-5">
+        <p class="text-3xl font-black" style="color: #ECD084;">
+          {{ data()!.stats.completedSets }}
+          <span class="text-base font-medium" style="color: #6B7E93;">/ {{ data()!.stats.totalSets }}</span>
+        </p>
+        <p class="text-xs mt-1" style="color: #9AACC0;">Sets complétés</p>
+      </div>
+
+      <div class="panel p-5">
+        <p class="text-3xl font-black" style="color: #ECD084;">
+          {{ data()!.stats.legendaryCards }}
+        </p>
+        <p class="text-xs mt-1" style="color: #9AACC0;">Cartes légendaires</p>
+      </div>
+
+      <div class="panel p-5">
+        <p class="text-3xl font-black" style="color: #ECD084;">
+          {{ data()!.stats.duplicates }}
+        </p>
+        <p class="text-xs mt-1" style="color: #9AACC0;">Doublons à échanger</p>
+      </div>
+
+      <!-- Taux de complétion global -->
+      <div class="panel p-5">
+        <p class="text-3xl font-black" style="color: #ECD084;">
+          @if (data()!.stats.totalSets > 0) {
+            {{ ((data()!.stats.completedSets / data()!.stats.totalSets) * 100).toFixed(0) }}%
+          } @else {
+            —
+          }
+        </p>
+        <p class="text-xs mt-1" style="color: #9AACC0;">Complétion globale</p>
+      </div>
+
+    </div>
+  }
+
+  <!-- ── Progression par set ──────────────────────────────────────────────────── -->
+  <div>
+    <h2 class="text-base font-semibold mb-4" style="color: #F0E8D0;">
+      Progression par set
+    </h2>
+
+    @if (loading()) {
+      <div class="space-y-3">
+        @for (_ of skeletons; track $index) {
+          <div class="panel p-4 animate-pulse space-y-2">
+            <div class="flex justify-between">
+              <div class="h-3 w-32 rounded" style="background: #1A3356;"></div>
+              <div class="h-3 w-10 rounded" style="background: #1A3356;"></div>
+            </div>
+            <div class="h-2 rounded-full w-full" style="background: #1A3356;"></div>
+          </div>
+        }
+      </div>
+    } @else if (data() && data()!.setProgression.length > 0) {
+      <div class="space-y-3">
+        @for (set of data()!.setProgression; track set.id) {
+          <a [routerLink]="['/sets', set.id]"
+             class="panel p-4 block transition-colors duration-200"
+             style="text-decoration: none; border-color: #1A3356;"
+             (mouseenter)="$any($event.currentTarget).style.borderColor='#B08B3A'"
+             (mouseleave)="$any($event.currentTarget).style.borderColor='#1A3356'">
+
+            <!-- Nom du set + pourcentage -->
+            <div class="flex items-center justify-between mb-2 gap-3">
+              <span class="text-sm font-medium truncate" style="color: #F0E8D0;">
+                {{ set.name }}
+              </span>
+              <span class="text-sm font-bold flex-shrink-0"
+                    [style.color]="set.completion === 100 ? '#ECD084' : '#9AACC0'">
+                {{ set.completion }}%
+              </span>
+            </div>
+
+            <!-- Barre de progression -->
+            <div class="h-2 rounded-full overflow-hidden" style="background: #1A3356;">
+              <div class="h-full rounded-full transition-all duration-500"
+                   [style.width.%]="set.completion"
+                   [style.background]="set.completion === 100
+                     ? 'linear-gradient(90deg, #B08B3A, #ECD084)'
+                     : 'linear-gradient(90deg, #2A4A6B, #3B6A9B)'">
+              </div>
+            </div>
+
+            <!-- Compteur cartes -->
+            <p class="text-xs mt-1.5" style="color: #6B7E93;">
+              {{ set.owned }} / {{ set.total }} cartes
+            </p>
+
+          </a>
+        }
+      </div>
+    } @else if (data()) {
+      <!-- État vide : aucune carte collectée -->
+      <div class="panel p-10 text-center">
+        <p class="text-4xl mb-3">🏴‍☠️</p>
+        <p class="text-sm font-medium" style="color: #F0E8D0;">Aucune carte collectée</p>
+        <p class="text-xs mt-1 mb-5" style="color: #9AACC0;">
+          Commence par explorer les sets disponibles.
+        </p>
+        <a routerLink="/sets" class="btn-primary"
+           style="width: auto; display: inline-block; padding: 0.5rem 1.5rem; text-decoration: none;">
+          Explorer les sets →
+        </a>
+      </div>
+    }
+  </div>
+
+</div>

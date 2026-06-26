@@ -18,6 +18,7 @@ export const routes: Routes = [
   // Routes protégées : redirige vers /login si non connecté
   { path: 'collection',              loadComponent: () => import('./pages/collection/collection/collection').then(m => m.CollectionComponent), canActivate: [authGuard] },
   { path: 'collection/missing/:id',  loadComponent: () => import('./pages/collection/missing/missing').then(m => m.MissingComponent),         canActivate: [authGuard] },
+  { path: 'profile',                 loadComponent: () => import('./pages/profile/profile').then(m => m.ProfileComponent),                    canActivate: [authGuard] },
 
   // Route admin : deux guards en série — authGuard vérifie la connexion, adminGuard vérifie le rôle
   { path: 'admin/sync', loadComponent: () => import('./pages/admin/sync/sync').then(m => m.SyncComponent), canActivate: [authGuard, adminGuard] },
