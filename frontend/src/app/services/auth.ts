@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   // Crée un compte, connecte automatiquement l'utilisateur et met à jour currentUser
-  signup(data: { email: string; password: string; username: string; firstName: string }) {
+  signup(data: { email: string; password: string; passwordConfirmation: string; username: string; firstName: string }) {
     return this.http.post<{ user: User }>(`${API}/signup`, data).pipe(
       tap(({ user }) => this.currentUser.set(user))
     )

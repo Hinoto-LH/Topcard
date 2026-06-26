@@ -1,3 +1,4 @@
+
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
@@ -24,17 +25,35 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   email = ''
   password = ''
+  passwordConfirmation = ''
   username = ''
   firstName = ''
   showPassword = false
+  showPasswordConfirmation = false
   error = signal<string | null>(null)
+
+  // Vérifie chaque règle en temps réel pour le checklist affiché sous le champ
+  get passwordRules() {
+    const p = this.password
+    return {
+      length:  p.length >= 8,
+      upper:   /[A-Z]/.test(p),
+      digit:   /\d/.test(p),
+      special: /[^a-zA-Z0-9]/.test(p),
+    }
+  }
+
+  get passwordValid() {
+    const r = this.passwordRules
+    return r.length && r.upper && r.digit && r.special
+  }
   loading = signal(false)
 
   submit() {
     this.error.set(null)
     this.loading.set(true)
 
-    this.auth.signup({ email: this.email, password: this.password, username: this.username, firstName: this.firstName }).subscribe({
+    this.auth.signup({ email: this.email, password: this.password, passwordConfirmation: this.passwordConfirmation, username: this.username, firstName: this.firstName }).subscribe({
       next: () => this.router.navigate(['/sets']),
       error: (err) => {
         this.error.set(err.error?.errors?.[0]?.message ?? 'Erreur lors de l\'inscription')

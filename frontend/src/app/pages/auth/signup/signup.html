@@ -76,7 +76,7 @@
                 <ng-icon name="lucideUser" size="16" />
               </span>
               <input id="firstName" type="text" [(ngModel)]="firstName" name="firstName"
-                     placeholder="Luffy" class="pl-10" required />
+                     placeholder="Luffy" class="pl-10 pr-4" required />
             </div>
           </div>
 
@@ -88,7 +88,7 @@
                 <ng-icon name="lucideUser" size="16" />
               </span>
               <input id="username" type="text" [(ngModel)]="username" name="username"
-                     placeholder="mugiwara" class="pl-10" required />
+                     placeholder="mugiwara" class="pl-10 pr-4" required />
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@
               <ng-icon name="lucideMail" size="16" />
             </span>
             <input id="email" type="email" [(ngModel)]="email" name="email"
-                   placeholder="capitaine@navire.com" class="pl-10" required />
+                   placeholder="capitaine@navire.com" class="pl-10 pr-4" required />
           </div>
         </div>
 
@@ -120,6 +120,43 @@
                     class="absolute right-3 top-1/2 -translate-y-1/2"
                     style="color: #9AACC0; background: none; border: none; cursor: pointer;">
               <ng-icon [name]="showPassword ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Checklist temps réel — visible dès que l'utilisateur commence à taper -->
+        @if (password.length > 0) {
+          <ul class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs mb-1">
+            <li [style.color]="passwordRules.length  ? '#4ADE80' : '#9AACC0'">
+              {{ passwordRules.length  ? '✓' : '○' }} 8 caractères min.
+            </li>
+            <li [style.color]="passwordRules.upper   ? '#4ADE80' : '#9AACC0'">
+              {{ passwordRules.upper   ? '✓' : '○' }} 1 majuscule
+            </li>
+            <li [style.color]="passwordRules.digit   ? '#4ADE80' : '#9AACC0'">
+              {{ passwordRules.digit   ? '✓' : '○' }} 1 chiffre
+            </li>
+            <li [style.color]="passwordRules.special ? '#4ADE80' : '#9AACC0'">
+              {{ passwordRules.special ? '✓' : '○' }} 1 caractère spécial
+            </li>
+          </ul>
+        }
+
+        <div class="field">
+          <label for="passwordConfirmation">Confirmer le mot de passe</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  style="color: #9AACC0;">
+              <ng-icon name="lucideLock" size="16" />
+            </span>
+            <input id="passwordConfirmation"
+                   [type]="showPasswordConfirmation ? 'text' : 'password'"
+                   [(ngModel)]="passwordConfirmation" name="passwordConfirmation"
+                   placeholder="••••••••" class="pl-10 pr-10" required />
+            <button type="button" (click)="showPasswordConfirmation = !showPasswordConfirmation"
+                    class="absolute right-3 top-1/2 -translate-y-1/2"
+                    style="color: #9AACC0; background: none; border: none; cursor: pointer;">
+              <ng-icon [name]="showPasswordConfirmation ? 'lucideEyeOff' : 'lucideEye'" size="16" />
             </button>
           </div>
         </div>

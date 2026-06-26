@@ -45,7 +45,7 @@ html, body {
     color: #9AACC0;
   }
   .field input {
-    @apply w-full px-4 py-3 rounded-lg text-sm outline-none transition-all duration-200;
+    @apply w-full py-3 rounded-lg text-sm outline-none transition-all duration-200;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid #1A3356;
     color: #F0E8D0;

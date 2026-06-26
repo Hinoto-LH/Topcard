@@ -9,7 +9,7 @@ const password = () =>
     .string()
     .minLength(8)
     .maxLength(64)
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\-_]).+$/)
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).+$/)
 
 /**
  * Validator to use when performing self-signup
