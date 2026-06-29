@@ -13,20 +13,23 @@ export default class CollectionsController {
     const user = auth.user!
     const { search, setId, rarity } = request.qs()
 
+    // whereHas filtre les lignes UserCard selon la relation card,
+    // contrairement au preload qui ne filtre que les données chargées
+    // (les UserCard sans carte correspondante étaient renvoyés avec card: null).
     const query = UserCard.query()
       .where('userId', user.id)
-      .preload('card', (cardQuery) => {
-        cardQuery.preload('set')
+      .preload('card', (cardQuery) => cardQuery.preload('set'))
 
-        if (search) {
-          cardQuery.where((q) => {
-            q.where('name', 'ilike', `%${search}%`)
-             .orWhere('number', 'ilike', `%${search}%`)
-          })
-        }
-        if (setId) cardQuery.where('setId', setId)
-        if (rarity) cardQuery.where('rarity', rarity)
+    if (search) {
+      query.whereHas('card', (q) => {
+        q.where((q2) => {
+          q2.where('name', 'ilike', `%${search}%`)
+            .orWhere('number', 'ilike', `%${search}%`)
+        })
       })
+    }
+    if (setId)  query.whereHas('card', (q) => q.where('setId', setId))
+    if (rarity) query.whereHas('card', (q) => q.where('rarity', rarity))
 
     const [userCards, sets] = await Promise.all([query, Set.all()])
     return response.json({ userCards, sets, search, setId, rarity })
@@ -72,6 +75,38 @@ export default class CollectionsController {
 
     await userCard.delete()
     return response.json({ ok: true })
+  }
+
+  // Génère un fichier CSV de toute la collection de l'utilisateur.
+  // La réponse est envoyée avec les headers Content-Type et Content-Disposition
+  // pour déclencher le téléchargement directement dans le navigateur.
+  async export({ auth, response }: HttpContext) {
+    const user = auth.user!
+
+    const userCards = await UserCard.query()
+      .where('userId', user.id)
+      .preload('card', (q) => q.preload('set'))
+
+    const header = 'Nom,Set,Numéro,Rareté,Quantité'
+    const rows = userCards
+      .filter((uc) => uc.card)
+      .map((uc) => {
+        const c = uc.card
+        // On entoure les champs de guillemets pour gérer les virgules dans les noms
+        return [
+          `"${c.name ?? ''}"`,
+          `"${c.set?.name ?? ''}"`,
+          `"${c.number ?? ''}"`,
+          `"${c.rarity ?? ''}"`,
+          uc.quantity,
+        ].join(',')
+      })
+
+    const csv = [header, ...rows].join('\n')
+
+    response.header('Content-Type', 'text/csv; charset=utf-8')
+    response.header('Content-Disposition', 'attachment; filename="topcard-collection.csv"')
+    return response.send(csv)
   }
 
   // Retourne les cartes manquantes d'un set + le pourcentage de complétion.

@@ -89,9 +89,13 @@
           <!-- ── Image de la carte ────────────────────────────────────────── -->
           <!-- aspect-[3/4] : ratio portrait TCG (63×88mm) -->
           <!-- relative pour positionner le badge "Possédée" par-dessus -->
-          <div class="aspect-[3/4] relative overflow-hidden">
-            <img [src]="card.imageUrl" [alt]="card.name"
-                 class="w-full h-full object-cover" />
+          <div class="aspect-[3/4] relative overflow-hidden flex items-center justify-center"
+               style="background: #1A3356;">
+            @if (card.imageUrl) {
+              <img [src]="card.imageUrl" [alt]="card.name"
+                   class="w-full h-full object-cover"
+                   (error)="$any($event.target).style.display='none'" />
+            }
 
             <!-- Overlay doré si la carte est dans la collection -->
             @if (owns(card.id)) {

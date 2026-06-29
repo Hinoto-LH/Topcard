@@ -16,8 +16,8 @@ export class AuthService {
   currentUser = signal<User | null>(null)
 
   // Envoie les identifiants au backend et met à jour currentUser en cas de succès
-  login(email: string, password: string) {
-    return this.http.post<{ user: User }>(`${API}/login`, { email, password }).pipe(
+  login(username: string, password: string) {
+    return this.http.post<{ user: User }>(`${API}/login`, { username, password }).pipe(
       tap(({ user }) => this.currentUser.set(user))
     )
   }

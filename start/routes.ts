@@ -33,6 +33,7 @@ router
 router
 .group(() => {
   router.get('/collection', [controllers.Collections, 'index'])
+  router.get('/collection/export', [controllers.Collections, 'export'])
   router.post('/collection', [controllers.Collections, 'store'])
   router.patch('/collection/:id', [controllers.Collections, 'update'])
   router.delete('/collection/:id', [controllers.Collections, 'destroy'])

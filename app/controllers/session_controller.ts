@@ -7,8 +7,8 @@ export default class SessionController {
   // puis ouvre une session web et retourne les infos utilisateur.
   // On retourne roleId (pas la relation role) car la relation n'est pas chargée ici.
   async store({ request, auth, response }: HttpContext) {
-    const { email, password } = request.all()
-    const user = await User.verifyCredentials(email, password)
+    const { username, password } = request.all()
+    const user = await User.verifyCredentials(username, password)
 
     await auth.use('web').login(user)
     return response.json({ user: { id: user.id, email: user.email, role: user.roleId } })

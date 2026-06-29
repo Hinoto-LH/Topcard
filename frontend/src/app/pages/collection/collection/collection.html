@@ -4,13 +4,18 @@
   <div class="flex items-end justify-between gap-4 mb-6 flex-wrap">
     <div>
       <h1 class="text-2xl font-bold" style="color: #F0E8D0;">Ma collection</h1>
-      <!-- Nombre de cartes mis à jour dès que la liste change, caché pendant le chargement -->
       @if (!loading()) {
         <p class="text-sm mt-1" style="color: #9AACC0;">
           {{ userCards().length }} carte{{ userCards().length > 1 ? 's' : '' }}
         </p>
       }
     </div>
+    <!-- Lien direct vers le backend — GET sans CSRF, le cookie de session est envoyé automatiquement -->
+    <a href="http://localhost:3333/collection/export"
+       class="btn-secondary px-5"
+       style="width: auto; text-decoration: none;">
+      ↓ Exporter CSV
+    </a>
   </div>
 
   <!-- ── Barre de filtres ───────────────────────────────────────────────────── -->
@@ -87,10 +92,14 @@
       @for (userCard of userCards(); track userCard.id) {
         <div class="panel overflow-hidden flex flex-col">
 
-          <!-- Image de la carte -->
-          <div class="aspect-[3/4] overflow-hidden relative">
-            <img [src]="userCard.card?.imageUrl" [alt]="userCard.card?.name"
-                 class="w-full h-full object-cover" />
+          <!-- Image de la carte : fond toujours présent si imageUrl manquant -->
+          <div class="aspect-[3/4] overflow-hidden relative flex items-center justify-center"
+               style="background: #1A3356;">
+            @if (userCard.card?.imageUrl) {
+              <img [src]="userCard.card!.imageUrl" [alt]="userCard.card?.name"
+                   class="w-full h-full object-cover"
+                   (error)="$any($event.target).style.display='none'" />
+            }
 
             <!-- Badge quantité en haut à droite, visible si > 1 -->
             @if (userCard.quantity > 1) {

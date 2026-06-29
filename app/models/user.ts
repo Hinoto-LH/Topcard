@@ -9,7 +9,8 @@ import Role from "#models/role"
 // withAuthFinder ajoute verifyCredentials() au modèle : recherche par email
 // et vérifie le hash du mot de passe via le service `hash` configuré (argon2).
 // compose() est nécessaire pour combiner plusieurs mixins sans conflit TypeScript.
-export default class User extends compose(UserSchema, withAuthFinder(hash)) {
+// uids: ['username'] → verifyCredentials() cherche par username au lieu d'email
+export default class User extends compose(UserSchema, withAuthFinder(hash, { uids: ['username'] })) {
 
   // Relation vers le modèle Role (roleId en colonne).
   // ATTENTION : cette relation est undefined jusqu'à un appel explicite à user.load('role').
