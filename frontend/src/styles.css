@@ -1,6 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0B1B32;
+  --color-navy-light: #0F2444;
+  --color-navy-border: #1A3356;
+  --color-gold: #ECD084;
+  --color-gold-dark: #B08B3A;
+  --color-text-cream: #F0E8D0;
+  --color-text-muted: #9AACC0;
+  --font-inter: 'Inter', sans-serif;
+}
 
 /* ─── Base ─────────────────────────────────────────────────────────────────── */
 html, body {
