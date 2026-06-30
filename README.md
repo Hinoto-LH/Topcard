@@ -25,6 +25,12 @@ Topcard/
 │   ├── migrations/      # Migrations de base de données
 │   └── seeders/         # Seeders
 ├── frontend/            # Application Angular (SPA)
+│   └── src/app/
+│       ├── pages/       # Composants lazy-loadés (auth, sets, collection, admin)
+│       ├── services/    # auth.ts, sets.ts, collection.ts, sync.ts
+│       ├── guards/      # authGuard, guestGuard, adminGuard
+│       ├── interceptors/ # credentials.interceptor.ts (XSRF + withCredentials)
+│       └── models/      # Interfaces TypeScript miroir des réponses API
 ├── start/
 │   ├── routes.ts        # Définition des routes API
 │   └── kernel.ts        # Middleware globaux
@@ -48,9 +54,6 @@ npm install
 
 # Installer les dépendances frontend
 cd frontend && npm install && cd ..
-
-# Copier et configurer les variables d'environnement
-cp .env.example .env
 
 # Lancer les migrations
 node ace migration:run
