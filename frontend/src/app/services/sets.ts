@@ -1,8 +1,9 @@
+import { environment } from '../../environments/environment'
 import { inject, Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Card, Set } from '../models/models'
 
-const API = 'http://localhost:3333'
+const API = environment.apiUrl
 
 // Set avec ses cartes incluses (utilisé sur la page de détail)
 export interface SetWithCards extends Set {

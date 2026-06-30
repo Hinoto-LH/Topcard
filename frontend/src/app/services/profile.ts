@@ -1,7 +1,8 @@
+import { environment } from '../../environments/environment'
 import { inject, Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 
-const API = 'http://localhost:3333'
+const API = environment.apiUrl
 
 export interface ProfileStats {
   uniqueCards:         number

@@ -3,8 +3,9 @@ import { HttpClient } from '@angular/common/http'
 import { Router } from '@angular/router'
 import { tap } from 'rxjs'
 import { User } from '../models/models'
+import { environment } from '../../environments/environment'
 
-const API = 'http://localhost:3333'
+const API = environment.apiUrl
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

@@ -1,8 +1,9 @@
+import { environment } from '../../environments/environment'
 import { inject, Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Card, Set, UserCard } from '../models/models'
 
-const API = 'http://localhost:3333'
+const API = environment.apiUrl
 
 // Filtres optionnels pour la page collection
 export interface CollectionFilters {
