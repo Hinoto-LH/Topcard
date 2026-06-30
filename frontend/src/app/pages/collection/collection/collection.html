@@ -92,9 +92,10 @@
       @for (userCard of userCards(); track userCard.id) {
         <div class="panel overflow-hidden flex flex-col">
 
-          <!-- Image de la carte : fond toujours présent si imageUrl manquant -->
+          <!-- Image de la carte : clic ouvre le modal -->
           <div class="aspect-[3/4] overflow-hidden relative flex items-center justify-center"
-               style="background: #1A3356;">
+               style="background: #1A3356; cursor: pointer;"
+               (click)="cardModal.open(userCard.card!.id)">
             @if (userCard.card?.imageUrl) {
               <img [src]="userCard.card!.imageUrl" [alt]="userCard.card?.name"
                    class="w-full h-full object-cover"

@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core'
+import { Component, effect, inject, OnInit, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { RouterLink } from '@angular/router'
 import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { lucideTrash2, lucideSearch, lucidePackageOpen } from '@ng-icons/lucide'
 import { CollectionService } from '../../../services/collection'
+import { CardModalService } from '../../../services/card-modal'
 import { Set, UserCard } from '../../../models/models'
 
 @Component({
@@ -14,6 +15,22 @@ import { Set, UserCard } from '../../../models/models'
 })
 export class CollectionComponent implements OnInit {
   private collectionService = inject(CollectionService)
+  cardModal = inject(CardModalService)
+
+  constructor() {
+    // Recharge la collection quand le modal se ferme (activeCardId repasse à null)
+    // pour refléter les ajouts/suppressions faits depuis le modal.
+    let wasOpen = false
+    effect(() => {
+      const id = this.cardModal.activeCardId()
+      if (id !== null) {
+        wasOpen = true
+      } else if (wasOpen) {
+        wasOpen = false
+        this.load()
+      }
+    })
+  }
 
   userCards = signal<UserCard[]>([])
   sets = signal<Set[]>([])

@@ -1,0 +1,139 @@
+<div class="px-5 lg:px-8 py-8 max-w-4xl mx-auto">
+
+  <!-- ── Lien retour ─────────────────────────────────────────────────────────── -->
+  @if (card()) {
+    <a [routerLink]="['/sets', card()!.set.id]"
+       class="inline-flex items-center gap-2 text-sm mb-6"
+       style="color: #9AACC0; text-decoration: none;">
+      ← Retour au set
+    </a>
+  } @else {
+    <a routerLink="/sets"
+       class="inline-flex items-center gap-2 text-sm mb-6"
+       style="color: #9AACC0; text-decoration: none;">
+      ← Retour aux sets
+    </a>
+  }
+
+  <!-- ── Squelette de chargement ─────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="flex flex-col md:flex-row gap-8 mt-2">
+      <div class="w-full md:w-64 shrink-0">
+        <div class="aspect-[3/4] rounded-xl animate-pulse" style="background: #1A3356;"></div>
+      </div>
+      <div class="flex-1 space-y-4 pt-2">
+        <div class="h-7 w-3/4 rounded animate-pulse" style="background: #1A3356;"></div>
+        <div class="h-4 w-1/3 rounded animate-pulse" style="background: #1A3356;"></div>
+        <div class="h-4 w-1/4 rounded animate-pulse" style="background: #1A3356;"></div>
+        <div class="h-4 w-1/2 rounded animate-pulse" style="background: #1A3356;"></div>
+      </div>
+    </div>
+
+  } @else if (card()) {
+
+    <!-- ── Layout principal ────────────────────────────────────────────────────── -->
+    <!-- flex-col mobile, flex-row desktop -->
+    <div class="flex flex-col md:flex-row gap-8 mt-2">
+
+      <!-- ── Image de la carte ──────────────────────────────────────────────────── -->
+      <!-- md:w-64 : largeur fixe sur desktop, pleine largeur (max-w-xs centré) sur mobile -->
+      <div class="w-full max-w-xs mx-auto md:mx-0 md:w-64 shrink-0">
+        <div class="aspect-[3/4] panel overflow-hidden flex items-center justify-center"
+             style="background: #1A3356;">
+          @if (card()!.imageUrl) {
+            <img [src]="card()!.imageUrl" [alt]="card()!.name"
+                 class="w-full h-full object-cover" />
+          }
+        </div>
+      </div>
+
+      <!-- ── Informations ───────────────────────────────────────────────────────── -->
+      <div class="flex-1 space-y-5">
+
+        <!-- Nom -->
+        <h1 class="text-2xl font-bold leading-snug" style="color: #F0E8D0;">
+          {{ card()!.name }}
+        </h1>
+
+        <!-- Métadonnées : numéro, rareté, set -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-sm">
+            <span style="color: #9AACC0;">Numéro</span>
+            <span class="font-medium" style="color: #F0E8D0;">{{ card()!.number }}</span>
+          </div>
+
+          <div class="flex items-center gap-2 text-sm">
+            <span style="color: #9AACC0;">Rareté</span>
+            <span class="font-semibold" [style.color]="rarityColor(card()!.rarity)">
+              {{ card()!.rarity }}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2 text-sm">
+            <span style="color: #9AACC0;">Set</span>
+            <a [routerLink]="['/sets', card()!.set.id]"
+               class="font-medium"
+               style="color: #ECD084; text-decoration: none;">
+              {{ card()!.set.name }}
+            </a>
+          </div>
+
+          @if (card()!.variant) {
+            <div class="flex items-center gap-2 text-sm">
+              <span style="color: #9AACC0;">Variante</span>
+              <span class="font-medium" style="color: #F0E8D0;">{{ card()!.variant }}</span>
+            </div>
+          }
+        </div>
+
+        <!-- ── Section collection (visible si connecté) ───────────────────────── -->
+        @if (auth.isLoggedIn()) {
+          <div class="panel p-5 space-y-4">
+
+            <p class="text-xs font-semibold uppercase tracking-wider" style="color: #9AACC0;">
+              Ma collection
+            </p>
+
+            @if (owned() === 0) {
+
+              <!-- Carte non possédée -->
+              <p class="text-sm" style="color: #9AACC0;">Tu ne possèdes pas cette carte.</p>
+              <button (click)="add()" [disabled]="updating()" class="btn-primary">
+                @if (updating()) { Ajout en cours… } @else { + Ajouter à ma collection }
+              </button>
+
+            } @else {
+
+              <!-- Carte possédée : compteur +/− -->
+              <div class="flex items-center gap-4">
+
+                <button (click)="decrement()" [disabled]="updating()"
+                        class="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+                        style="background: rgba(255,255,255,0.05); border: 1px solid #1A3356; color: #F0E8D0; cursor: pointer;">
+                  <ng-icon name="lucideMinus" size="16" />
+                </button>
+
+                <div class="text-center">
+                  <span class="text-2xl font-bold" style="color: #ECD084;">{{ owned() }}</span>
+                  <p class="text-xs" style="color: #9AACC0;">
+                    {{ owned() > 1 ? 'exemplaires' : 'exemplaire' }}
+                  </p>
+                </div>
+
+                <button (click)="increment()" [disabled]="updating()"
+                        class="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+                        style="background: rgba(255,255,255,0.05); border: 1px solid #1A3356; color: #F0E8D0; cursor: pointer;">
+                  <ng-icon name="lucidePlus" size="16" />
+                </button>
+
+              </div>
+
+            }
+          </div>
+        }
+
+      </div>
+    </div>
+  }
+
+</div>

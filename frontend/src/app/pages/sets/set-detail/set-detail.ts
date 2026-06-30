@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router'
 import { SetsService, SetWithCards } from '../../../services/sets'
 import { CollectionService } from '../../../services/collection'
 import { AuthService } from '../../../services/auth'
+import { CardModalService } from '../../../services/card-modal'
 
 @Component({
   selector: 'app-set-detail',
@@ -15,6 +16,7 @@ export class SetDetailComponent implements OnInit {
   private collectionService = inject(CollectionService)
   // auth est public car le template en a besoin pour isLoggedIn() et isAdmin()
   auth = inject(AuthService)
+  cardModal = inject(CardModalService)
 
   set = signal<SetWithCards | null>(null)
   // Liste des cardId possédés par l'utilisateur pour ce set — évite de charger

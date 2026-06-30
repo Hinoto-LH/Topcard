@@ -84,7 +84,9 @@
 
         <!-- panel + overflow-hidden : coins arrondis qui coupent l'image -->
         <!-- relative : nécessaire pour l'overlay "Possédée" en position absolue -->
-        <div class="panel overflow-hidden flex flex-col relative">
+        <div class="panel overflow-hidden flex flex-col relative"
+             style="cursor: pointer;"
+             (click)="cardModal.open(card.id)">
 
           <!-- ── Image de la carte ────────────────────────────────────────── -->
           <!-- aspect-[3/4] : ratio portrait TCG (63×88mm) -->

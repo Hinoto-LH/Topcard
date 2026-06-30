@@ -41,11 +41,11 @@ router
 })
 .use(middleware.auth())
 
-// Routes sets : publiques — silent_auth_middleware peuple auth.user si connecté
-// pour que show() puisse calculer la complétion sans bloquer les visiteurs.
+// Routes sets et cards : publiques — silent_auth_middleware peuple auth.user si connecté
 router.group(() => {
   router.get('/sets', [controllers.Sets, 'index'])
   router.get('/sets/:id', [controllers.Sets, 'show'])
+  router.get('/cards/:id', [controllers.Cards, 'show'])
 })
 
 router

@@ -12,8 +12,9 @@ export const routes: Routes = [
   { path: 'signup', loadComponent: () => import('./pages/auth/signup/signup').then(m => m.SignupComponent), canActivate: [guestGuard] },
 
   // Routes publiques : accessibles sans connexion
-  { path: 'sets',     loadComponent: () => import('./pages/sets/sets-list/sets-list').then(m => m.SetsListComponent) },
-  { path: 'sets/:id', loadComponent: () => import('./pages/sets/set-detail/set-detail').then(m => m.SetDetailComponent) },
+  { path: 'sets',      loadComponent: () => import('./pages/sets/sets-list/sets-list').then(m => m.SetsListComponent) },
+  { path: 'sets/:id',  loadComponent: () => import('./pages/sets/set-detail/set-detail').then(m => m.SetDetailComponent) },
+  { path: 'cards/:id', loadComponent: () => import('./pages/card-detail/card-detail').then(m => m.CardDetailComponent) },
 
   // Routes protégées : redirige vers /login si non connecté
   { path: 'collection',              loadComponent: () => import('./pages/collection/collection/collection').then(m => m.CollectionComponent), canActivate: [authGuard] },

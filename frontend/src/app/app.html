@@ -7,7 +7,7 @@
 
       <!-- Logo -->
       <a routerLink="/sets" class="flex items-center">
-        <img src="/logo.png" alt="Topcard" class="h-8 w-auto" />
+        <img src="/logo.webp" alt="Topcard" class="h-8 w-auto" />
       </a>
 
       <!-- ── Liens desktop ──────────────────────────────────────────────────── -->
@@ -151,3 +151,6 @@
 <main [class.pt-16]="layout.showNav()">
   <router-outlet />
 </main>
+
+<!-- Modal carte : présent sur toutes les pages, s'affiche via CardModalService -->
+<app-card-modal />

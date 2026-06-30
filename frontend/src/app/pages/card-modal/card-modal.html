@@ -1,0 +1,134 @@
+@if (cardModal.activeCardId() !== null) {
+
+  <!-- ── Overlay : fond sombre + flou sur le contenu derrière ─────────────── -->
+  <!-- fixed inset-0 : couvre tout l'écran par-dessus le reste -->
+  <!-- z-50 : au-dessus de la navbar (z-50) -->
+  <!-- backdrop-filter blur : floute la page derrière l'overlay -->
+  <div class="fixed inset-0 z-[60] flex items-center justify-center p-4"
+       style="background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);"
+       (click)="close()">
+
+    <!-- ── Panel du modal ───────────────────────────────────────────────────── -->
+    <!-- stopPropagation : empêche le clic à l'intérieur de fermer le modal -->
+    <!-- max-h-[90vh] + overflow-y-auto : scroll si le contenu dépasse l'écran -->
+    <div class="panel w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+         (click)="$event.stopPropagation()">
+
+      <!-- ── Bouton fermer ───────────────────────────────────────────────────── -->
+      <div class="flex justify-end p-3 pb-0">
+        <button (click)="close()"
+                style="background: none; border: none; cursor: pointer; color: #9AACC0;">
+          <ng-icon name="lucideX" size="20" />
+        </button>
+      </div>
+
+      <!-- ── Contenu : squelette ou carte ───────────────────────────────────── -->
+      @if (loading()) {
+
+        <div class="flex flex-col sm:flex-row gap-6 p-5">
+          <div class="w-full sm:w-48 shrink-0">
+            <div class="aspect-[3/4] rounded-lg animate-pulse" style="background: #1A3356;"></div>
+          </div>
+          <div class="flex-1 space-y-3 pt-1">
+            <div class="h-6 w-3/4 rounded animate-pulse" style="background: #1A3356;"></div>
+            <div class="h-4 w-1/3 rounded animate-pulse" style="background: #1A3356;"></div>
+            <div class="h-4 w-1/4 rounded animate-pulse" style="background: #1A3356;"></div>
+          </div>
+        </div>
+
+      } @else if (card()) {
+
+        <div class="flex flex-col sm:flex-row gap-6 p-5 pt-2">
+
+          <!-- Image -->
+          <div class="w-full sm:w-48 shrink-0 mx-auto sm:mx-0" style="max-width: 12rem;">
+            <div class="aspect-[3/4] rounded-lg overflow-hidden flex items-center justify-center"
+                 style="background: #1A3356;">
+              @if (card()!.imageUrl) {
+                <img [src]="card()!.imageUrl" [alt]="card()!.name"
+                     class="w-full h-full object-cover" />
+              }
+            </div>
+          </div>
+
+          <!-- Infos -->
+          <div class="flex-1 space-y-4">
+
+            <h2 class="text-xl font-bold leading-snug" style="color: #F0E8D0;">
+              {{ card()!.name }}
+            </h2>
+
+            <div class="space-y-2">
+              <div class="flex items-center gap-2 text-sm">
+                <span style="color: #9AACC0;">Numéro</span>
+                <span class="font-medium" style="color: #F0E8D0;">{{ card()!.number }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-sm">
+                <span style="color: #9AACC0;">Rareté</span>
+                <span class="font-semibold" [style.color]="rarityColor(card()!.rarity)">
+                  {{ card()!.rarity }}
+                </span>
+              </div>
+              <div class="flex items-center gap-2 text-sm">
+                <span style="color: #9AACC0;">Set</span>
+                <a [routerLink]="['/sets', card()!.set.id]" (click)="close()"
+                   class="font-medium" style="color: #ECD084; text-decoration: none;">
+                  {{ card()!.set.name }}
+                </a>
+              </div>
+              @if (card()!.variant) {
+                <div class="flex items-center gap-2 text-sm">
+                  <span style="color: #9AACC0;">Variante</span>
+                  <span class="font-medium" style="color: #F0E8D0;">{{ card()!.variant }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Contrôles collection -->
+            @if (auth.isLoggedIn()) {
+              <div class="panel p-4 space-y-3">
+                <p class="text-xs font-semibold uppercase tracking-wider" style="color: #9AACC0;">
+                  Ma collection
+                </p>
+
+                @if (owned() === 0) {
+                  <p class="text-sm" style="color: #9AACC0;">Tu ne possèdes pas cette carte.</p>
+                  <button (click)="add()" [disabled]="updating()" class="btn-primary">
+                    @if (updating()) { Ajout en cours… } @else { + Ajouter à ma collection }
+                  </button>
+                } @else {
+                  <div class="flex items-center gap-4">
+                    <button (click)="decrement()" [disabled]="updating()"
+                            class="w-9 h-9 rounded-lg flex items-center justify-center"
+                            style="background: rgba(255,255,255,0.05); border: 1px solid #1A3356; color: #F0E8D0; cursor: pointer;">
+                      <ng-icon name="lucideMinus" size="16" />
+                    </button>
+                    <div class="text-center">
+                      <span class="text-2xl font-bold" style="color: #ECD084;">{{ owned() }}</span>
+                      <p class="text-xs" style="color: #9AACC0;">
+                        {{ owned() > 1 ? 'exemplaires' : 'exemplaire' }}
+                      </p>
+                    </div>
+                    <button (click)="increment()" [disabled]="updating()"
+                            class="w-9 h-9 rounded-lg flex items-center justify-center"
+                            style="background: rgba(255,255,255,0.05); border: 1px solid #1A3356; color: #F0E8D0; cursor: pointer;">
+                      <ng-icon name="lucidePlus" size="16" />
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Lien vers la page détail complète -->
+            <a [routerLink]="['/cards', card()!.id]" (click)="close()"
+               class="inline-block text-sm"
+               style="color: #9AACC0; text-decoration: none;">
+              Voir la fiche complète →
+            </a>
+
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

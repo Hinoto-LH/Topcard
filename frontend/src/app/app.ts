@@ -5,10 +5,11 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core'
 import { lucideMenu, lucideX, lucideLogOut, lucideSettings } from '@ng-icons/lucide'
 import { AuthService } from './services/auth'
 import { LayoutService } from './services/layout'
+import { CardModalComponent } from './pages/card-modal/card-modal'
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, NgIconComponent],
+  imports: [RouterOutlet, RouterLink, NgIconComponent, CardModalComponent],
   providers: [provideIcons({ lucideMenu, lucideX, lucideLogOut, lucideSettings })],
   templateUrl: './app.html',
 })
