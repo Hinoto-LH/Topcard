@@ -42,6 +42,12 @@ const routes = {
     tokens: [{"old":"/collection","type":0,"val":"collection","end":""}],
     types: placeholder as Registry['collections.index']['types'],
   },
+  'collections.export': {
+    methods: ["GET","HEAD"],
+    pattern: '/collection/export',
+    tokens: [{"old":"/collection/export","type":0,"val":"collection","end":""},{"old":"/collection/export","type":0,"val":"export","end":""}],
+    types: placeholder as Registry['collections.export']['types'],
+  },
   'collections.store': {
     methods: ["POST"],
     pattern: '/collection',
@@ -78,6 +84,12 @@ const routes = {
     tokens: [{"old":"/sets/:id","type":0,"val":"sets","end":""},{"old":"/sets/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['sets.show']['types'],
   },
+  'cards.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/cards/:id',
+    tokens: [{"old":"/cards/:id","type":0,"val":"cards","end":""},{"old":"/cards/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['cards.show']['types'],
+  },
   'session.destroy': {
     methods: ["POST"],
     pattern: '/logout',
@@ -89,6 +101,12 @@ const routes = {
     pattern: '/me',
     tokens: [{"old":"/me","type":0,"val":"me","end":""}],
     types: placeholder as Registry['me.show']['types'],
+  },
+  'profile.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/profile',
+    tokens: [{"old":"/profile","type":0,"val":"profile","end":""}],
+    types: placeholder as Registry['profile.show']['types'],
   },
 } as const satisfies Record<string, AdonisEndpoint>
 

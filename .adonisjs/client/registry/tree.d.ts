@@ -16,6 +16,7 @@ export interface ApiDefinition {
   }
   collections: {
     index: typeof routes['collections.index']
+    export: typeof routes['collections.export']
     store: typeof routes['collections.store']
     update: typeof routes['collections.update']
     destroy: typeof routes['collections.destroy']
@@ -25,7 +26,13 @@ export interface ApiDefinition {
     index: typeof routes['sets.index']
     show: typeof routes['sets.show']
   }
+  cards: {
+    show: typeof routes['cards.show']
+  }
   me: {
     show: typeof routes['me.show']
+  }
+  profile: {
+    show: typeof routes['profile.show']
   }
 }

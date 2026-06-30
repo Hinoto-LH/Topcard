@@ -10,30 +10,39 @@ export type ScannedRoutes = {
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'collections.index': { paramsTuple?: []; params?: {} }
+    'collections.export': { paramsTuple?: []; params?: {} }
     'collections.store': { paramsTuple?: []; params?: {} }
     'collections.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'collections.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'collections.missing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'sets.index': { paramsTuple?: []; params?: {} }
     'sets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cards.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
     'me.show': { paramsTuple?: []; params?: {} }
+    'profile.show': { paramsTuple?: []; params?: {} }
   }
   GET: {
     'syncs.index': { paramsTuple?: []; params?: {} }
     'collections.index': { paramsTuple?: []; params?: {} }
+    'collections.export': { paramsTuple?: []; params?: {} }
     'collections.missing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'sets.index': { paramsTuple?: []; params?: {} }
     'sets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cards.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'me.show': { paramsTuple?: []; params?: {} }
+    'profile.show': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
     'syncs.index': { paramsTuple?: []; params?: {} }
     'collections.index': { paramsTuple?: []; params?: {} }
+    'collections.export': { paramsTuple?: []; params?: {} }
     'collections.missing': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'sets.index': { paramsTuple?: []; params?: {} }
     'sets.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cards.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'me.show': { paramsTuple?: []; params?: {} }
+    'profile.show': { paramsTuple?: []; params?: {} }
   }
   POST: {
     'syncs.sync_sets': { paramsTuple?: []; params?: {} }
