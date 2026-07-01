@@ -113,7 +113,8 @@ test.group('SyncService > syncCards', (group) => {
       data: [makeCard('c1', 'OP01-001'), makeCard('c2', 'OP01-002')],
     })
 
-    const result = await new SyncService().syncCards(set.externalId)
+    // syncCards attend l'ID base du set (Set.findOrFail(setId)), pas l'externalId.
+    const result = await new SyncService().syncCards(set.id)
 
     assert.equal(result.synced, 2)
     assert.isEmpty(result.errors)
@@ -131,8 +132,8 @@ test.group('SyncService > syncCards', (group) => {
 
     globalThis.fetch = makeFetch({ total: 1, data: [makeCard('c1', 'OP01-001')] })
 
-    await new SyncService().syncCards(set.externalId)
-    const result = await new SyncService().syncCards(set.externalId)
+    await new SyncService().syncCards(set.id)
+    const result = await new SyncService().syncCards(set.id)
 
     assert.equal(result.synced, 1)
     const [row] = await Card.query().count('* as total')
@@ -159,7 +160,7 @@ test.group('SyncService > syncCards', (group) => {
       } as unknown as Response
     }
 
-    const result = await new SyncService().syncCards(set.externalId)
+    const result = await new SyncService().syncCards(set.id)
 
     assert.equal(result.synced, 3)
     assert.equal(fetchCalls, 2)

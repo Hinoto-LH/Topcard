@@ -24,7 +24,8 @@ export const routes: Routes = [
   // Route admin : deux guards en série — authGuard vérifie la connexion, adminGuard vérifie le rôle
   { path: 'admin/sync', loadComponent: () => import('./pages/admin/sync/sync').then(m => m.SyncComponent), canActivate: [authGuard, adminGuard] },
 
-  // Gestion des erreurs : toute URL inconnue → 404
+  // Gestion des erreurs : page 500 (erreur serveur) + toute URL inconnue → 404
+  { path: '500', loadComponent: () => import('./pages/errors/server-error/server-error').then(m => m.ServerErrorComponent) },
   { path: '404', loadComponent: () => import('./pages/errors/not-found/not-found').then(m => m.NotFoundComponent) },
   { path: '**', redirectTo: '404' },
 ]

@@ -3,7 +3,10 @@ import env from '#start/env'
 import app from '@adonisjs/core/services/app'
 
 const dbConfig = defineConfig({
-  connection: 'pg',
+  // En test, on bascule sur SQLite (base jetable dans tmp/) pour que la suite
+  // soit auto-suffisante et ne nécessite pas un PostgreSQL en cours d'exécution.
+  // En dev/prod, on reste sur PostgreSQL.
+  connection: app.inTest ? 'sqlite' : 'pg',
 
   connections: {
     pg: {
@@ -20,6 +23,18 @@ const dbConfig = defineConfig({
         paths: ['database/migrations'],
       },
       debug: app.inDev,
+    },
+
+    sqlite: {
+      client: 'better-sqlite3',
+      connection: {
+        filename: app.tmpPath('db.sqlite3'),
+      },
+      useNullAsDefault: true,
+      migrations: {
+        naturalSort: true,
+        paths: ['database/migrations'],
+      },
     },
   },
 })

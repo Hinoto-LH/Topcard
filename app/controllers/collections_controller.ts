@@ -110,8 +110,7 @@ export default class CollectionsController {
   }
 
   // Retourne les cartes manquantes d'un set + le pourcentage de complétion.
-  // set.serialize() au lieu de SetTransformer.transform() : le transformer enveloppait
-  // la réponse dans { $type, transformerData } qu'Angular ne sait pas désérialiser.
+  // On renvoie set.serialize() directement (JSON plat attendu par Angular).
   async missing({ auth, params, response }: HttpContext) {
     const user = auth.user!
 

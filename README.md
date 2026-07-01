@@ -1,6 +1,6 @@
 # Topcard
 
-Application de gestion de collection de cartes Pokemon.
+Application de gestion de collection de cartes One Piece TCG.
 
 ## Stack technique
 
@@ -73,16 +73,20 @@ cd frontend && ng serve
 
 | Méthode | Route | Auth | Description |
 |---------|-------|------|-------------|
-| POST | `/signup` | guest | Créer un compte |
-| POST | `/login` | guest | Se connecter |
+| POST | `/signup` | guest | Créer un compte (connecte immédiatement) |
+| POST | `/login` | guest | Se connecter (par `username`) |
 | POST | `/logout` | auth | Se déconnecter |
+| GET | `/me` | auth | Utilisateur connecté (restauration de session) |
+| GET | `/profile` | auth | Profil + statistiques |
 | GET | `/sets` | — | Liste des sets |
-| GET | `/sets/:id` | — | Détail d'un set |
-| GET | `/collection` | auth | Ma collection |
+| GET | `/sets/:id` | — | Détail d'un set (+ cartes possédées si connecté) |
+| GET | `/cards/:id` | — | Détail d'une carte (+ possession si connecté) |
+| GET | `/collection` | auth | Ma collection (filtres `search`, `setId`, `rarity`) |
 | POST | `/collection` | auth | Ajouter une carte |
-| PATCH | `/collection/:id` | auth | Modifier une carte |
+| PATCH | `/collection/:id` | auth | Modifier la quantité d'une carte |
 | DELETE | `/collection/:id` | auth | Supprimer une carte |
 | GET | `/collection/missing/:id` | auth | Cartes manquantes d'un set |
+| GET | `/collection/export` | auth | Exporter la collection en CSV |
 | GET | `/admin/sync` | admin | Page de synchronisation |
 | POST | `/admin/sync/sets` | admin | Synchroniser les sets |
 | POST | `/admin/sync/cards/:setId` | admin | Synchroniser les cartes d'un set |

@@ -34,8 +34,10 @@ export interface UserCard {
 }
 
 // Utilisateur connecté (renvoyé par login/signup/me)
+// `role` = nom du rôle ('admin', 'user', 'pro') ou null. On compare par nom
+// (et non par id) pour rester cohérent avec AdminMiddleware côté serveur.
 export interface User {
   id: number
   email: string
-  role: number | null
+  role: string | null
 }

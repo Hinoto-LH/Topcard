@@ -6,8 +6,8 @@ import { belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Role from "#models/role"
 
-// withAuthFinder ajoute verifyCredentials() au modèle : recherche par email
-// et vérifie le hash du mot de passe via le service `hash` configuré (argon2).
+// withAuthFinder ajoute verifyCredentials() au modèle : recherche par username
+// et vérifie le hash du mot de passe via le service `hash` configuré (scrypt, cf. config/hash.ts).
 // compose() est nécessaire pour combiner plusieurs mixins sans conflit TypeScript.
 // uids: ['username'] → verifyCredentials() cherche par username au lieu d'email
 export default class User extends compose(UserSchema, withAuthFinder(hash, { uids: ['username'] })) {

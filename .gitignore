@@ -25,3 +25,7 @@ yarn-error.log
 
 # Platform specific
 .DS_Store
+
+# AI assistant tooling (local only)
+CLAUDE.md
+.claude
