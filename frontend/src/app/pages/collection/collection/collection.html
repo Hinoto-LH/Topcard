@@ -10,8 +10,9 @@
         </p>
       }
     </div>
-    <!-- Lien direct vers le backend — GET sans CSRF, le cookie de session est envoyé automatiquement -->
-    <a href="http://localhost:3333/collection/export"
+    <!-- Lien direct vers le backend — GET sans CSRF, le cookie de session est envoyé
+         automatiquement. L'URL vient de environment.apiUrl (pas codée en dur). -->
+    <a [href]="exportUrl"
        class="btn-secondary px-5"
        style="width: auto; text-decoration: none;">
       ↓ Exporter CSV

@@ -1,7 +1,7 @@
 import { assert } from '@japa/assert'
 import app from '@adonisjs/core/services/app'
 import type { Config } from '@japa/runner/types'
-import { apiClient } from '@japa/api-client'
+import { apiClient, ApiClient } from '@japa/api-client'
 import { pluginAdonisJS } from '@japa/plugin-adonisjs'
 import { dbAssertions } from '@adonisjs/lucid/plugins/db'
 import testUtils from '@adonisjs/core/services/test_utils'
@@ -10,6 +10,11 @@ import { authApiClient } from '@adonisjs/auth/plugins/api_client'
 import { authBrowserClient } from '@adonisjs/auth/plugins/browser_client'
 import { sessionApiClient } from '@adonisjs/session/plugins/api_client'
 import { sessionBrowserClient } from '@adonisjs/session/plugins/browser_client'
+
+// Le client de test envoie systématiquement `Accept: application/json`, comme le
+// HttpClient d'Angular. Sans cet en-tête, la négociation de contenu d'AdonisJS ne
+// rend pas les erreurs de validation en JSON (422) — elle retombe sur un 404.
+ApiClient.onRequest((request) => request.accept('json'))
 
 export const plugins: Config['plugins'] = [
   assert(),

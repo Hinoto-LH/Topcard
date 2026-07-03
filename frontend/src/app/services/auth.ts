@@ -52,6 +52,8 @@ export class AuthService {
   }
 
   isAdmin() {
-    return this.currentUser()?.role === 1
+    // Comparaison par nom de rôle (comme AdminMiddleware côté serveur)
+    // insensible à l'ordre du seed.
+    return this.currentUser()?.role === 'admin'
   }
 }

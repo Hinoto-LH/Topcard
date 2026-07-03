@@ -29,8 +29,8 @@ export default class SetsController {
 
     const completion = set.cards.length > 0 ? Math.round((ownedInSet / set.cards.length) * 100) : 0
 
-    // serialize() au lieu de SetTransformer.transform() : le transformer enveloppait
-    // la réponse dans { $type, transformerData } qu'Angular ne sait pas désérialiser.
+    // On renvoie set.serialize() directement : Angular attend un JSON plat,
+    // pas une enveloppe transformer.
     return response.json({
       set: set.serialize(),
       ownerCardsIds,

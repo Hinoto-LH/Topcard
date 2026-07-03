@@ -6,12 +6,12 @@ export default class NewAccountController {
 
   // Crée le compte et connecte l'utilisateur immédiatement dans la même requête.
   // Le mot de passe est hashé automatiquement par le hook beforeSave du modèle User.
-  // roleId non fourni → null par défaut (rôle utilisateur standard).
+  // roleId non fourni → un nouvel inscrit n'est jamais admin → role: null.
   async store({ request, response, auth }: HttpContext) {
     const payload = await request.validateUsing(signupValidator)
     const user = await User.create({ ...payload })
 
     await auth.use('web').login(user)
-    return response.json({ user: { id: user.id, email: user.email, role: user.roleId } })
+    return response.json({ user: { id: user.id, email: user.email, role: null } })
   }
 }

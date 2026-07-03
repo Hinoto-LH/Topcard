@@ -6,6 +6,7 @@ import { lucideTrash2, lucideSearch, lucidePackageOpen } from '@ng-icons/lucide'
 import { CollectionService } from '../../../services/collection'
 import { CardModalService } from '../../../services/card-modal'
 import { Set, UserCard } from '../../../models/models'
+import { environment } from '../../../../environments/environment'
 
 @Component({
   selector: 'app-collection',
@@ -36,6 +37,11 @@ export class CollectionComponent implements OnInit {
   sets = signal<Set[]>([])
   loading = signal(true)
   skeletons = Array(8)
+
+  // URL de l'export CSV construite depuis l'environnement (pas d'URL codée en dur).
+  // Lien GET direct : le cookie de session part automatiquement (SameSite=Lax),
+  // et le header Content-Disposition du backend déclenche le téléchargement.
+  exportUrl = `${environment.apiUrl}/collection/export`
 
   // Valeurs des filtres — simples propriétés (pas des signals) car elles sont
   // liées à des inputs via [(ngModel)] qui gère lui-même la réactivité.
