@@ -6,7 +6,7 @@
 |-----------|---------------|
 | Sprint planning | [Kanban GitHub — issues du sprint](https://github.com/Hinoto-LH/Topcard/issues?q=is%3Aissue+updated%3A%3E%40today-1w+sort%3Aupdated-desc) |
 | Sprint reviews | [Kanban GitHub — issues du sprint](https://github.com/Hinoto-LH/Topcard/issues?q=is%3Aissue+updated%3A%3E%40today-1w+sort%3Aupdated-desc) |
-| Rétrospectives | N/A — aucune rétrospective n'a encore été réalisée (projet solo) |
+| Rétrospectives | [`documentation/RETROSPECTIVE.md`](https://github.com/Hinoto-LH/Topcard/blob/main/documentation/RETROSPECTIVE.md) — rétrospective du 03 juillet 2026 |
 | Dépôt source | [github.com/Hinoto-LH/Topcard](https://github.com/Hinoto-LH/Topcard) |
 | Suivi des bugs | [GitHub Issues](https://github.com/Hinoto-LH/Topcard/issues) — tickets ouverts tout au long du projet pour signaler et suivre les bugs identifiés |
 | Preuves et résultats de tests | [Dossier `tests/`](https://github.com/Hinoto-LH/Topcard/tree/main/tests) — 48 cas de test fonctionnels et unitaires ([Japa](https://japa.dev)), exécutables avec `node ace test` — détail dans les tableaux ci-dessous |
