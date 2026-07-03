@@ -29,3 +29,6 @@ yarn-error.log
 # AI assistant tooling (local only)
 CLAUDE.md
 .claude
+
+# Support d'apprentissage perso (local only)
+apprentissage/
