@@ -8,7 +8,7 @@
 | Sprint reviews | [`documentation/SPRINT_REVIEW.md`](https://github.com/Hinoto-LH/Topcard/blob/main/documentation/SPRINT_REVIEW.md) — sprint review May 22 → July 3, 2026 |
 | Retrospectives | [`documentation/RETROSPECTIVE.md`](https://github.com/Hinoto-LH/Topcard/blob/main/documentation/RETROSPECTIVE.md) — retrospective of July 3, 2026 |
 | Source repository | [github.com/Hinoto-LH/Topcard](https://github.com/Hinoto-LH/Topcard) |
-| Bug tracking | N/A — no dedicated tool was used (solo project); the repository's GitHub Issues remain available for reports |
+| Bug tracking | [`documentation/BUG_TRACKING.md`](https://github.com/Hinoto-LH/Topcard/blob/main/documentation/BUG_TRACKING.md) — 10 bugs identified and resolved, all fixed by end of sprint |
 | Testing evidence and results | [`tests/` folder](https://github.com/Hinoto-LH/Topcard/tree/main/tests) — 48 functional and unit test cases ([Japa](https://japa.dev)), run with `node ace test` — detailed in the tables below |
 | Production environment | N/A — the application is not deployed online; it runs locally via `docker compose up` (PostgreSQL + AdonisJS + Angular) |
 
