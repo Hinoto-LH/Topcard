@@ -6,7 +6,7 @@
 |----------|---------------|
 | Sprint planning | [GitHub kanban — sprint issues](https://github.com/Hinoto-LH/Topcard/issues?q=is%3Aissue+updated%3A%3E%40today-1w+sort%3Aupdated-desc) |
 | Sprint reviews | [GitHub kanban — sprint issues](https://github.com/Hinoto-LH/Topcard/issues?q=is%3Aissue+updated%3A%3E%40today-1w+sort%3Aupdated-desc) |
-| Retrospectives | [GitHub kanban — sprint issues](https://github.com/Hinoto-LH/Topcard/issues?q=is%3Aissue+updated%3A%3E%40today-1w+sort%3Aupdated-desc) |
+| Retrospectives | N/A — no retrospective has been held yet (solo project) |
 | Source repository | [github.com/Hinoto-LH/Topcard](https://github.com/Hinoto-LH/Topcard) |
 | Bug tracking | N/A — no dedicated tool was used (solo project); the repository's GitHub Issues remain available for reports |
 | Testing evidence and results | [`tests/` folder](https://github.com/Hinoto-LH/Topcard/tree/main/tests) — 48 functional and unit test cases ([Japa](https://japa.dev)), run with `node ace test` — detailed in the tables below |
@@ -16,7 +16,7 @@
 
 ### Sprint management (GitHub)
 
-All agile tracking (sprint planning, reviews, and retrospectives) is managed as a kanban directly on GitHub, through the repository issues:
+Agile tracking (sprint planning and reviews) is managed as a kanban directly on GitHub, through the repository issues:
 **https://github.com/Hinoto-LH/Topcard/issues?q=is%3Aissue+updated%3A%3E%40today-1w+sort%3Aupdated-desc**
 
 This view filters issues updated during the last week (current sprint), sorted by recent activity.
