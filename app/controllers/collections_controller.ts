@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import UserCard from '#models/user_card'
 import Set from '#models/set'
-import { updateQuantityValidator } from '#validators/collection'
+import { storeCardValidator, updateQuantityValidator } from '#validators/collection'
 
 export default class CollectionsController {
 
@@ -39,7 +39,7 @@ export default class CollectionsController {
   // Si elle existe déjà, on ne fait rien (la quantité reste inchangée).
   async store({ auth, request, response }: HttpContext) {
     const user = auth.user!
-    const cardId = request.input('cardId')
+    const { cardId } = await request.validateUsing(storeCardValidator)
 
     await UserCard.firstOrCreate(
       { userId: user.id, cardId },

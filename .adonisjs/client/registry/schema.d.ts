@@ -95,12 +95,12 @@ export interface Registry {
     methods: ["POST"]
     pattern: '/collection'
     types: {
-      body: {}
+      body: ExtractBody<InferInput<(typeof import('#validators/collection').storeCardValidator)>>
       paramsTuple: []
       params: {}
-      query: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/collection').storeCardValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/collections_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collections_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collections_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'collections.update': {
