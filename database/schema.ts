@@ -21,7 +21,7 @@ export class CardSchema extends BaseModel {
   @column()
   declare name: string
   @column()
-  declare number: string
+  declare number: string | null
   @column()
   declare rarity: string
   @column()

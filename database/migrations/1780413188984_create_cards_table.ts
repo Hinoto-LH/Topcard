@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.integer('set_id').unsigned().notNullable()
       table.foreign('set_id').references('sets.id')
       table.string('name').notNullable()
-      table.string('number').notNullable()
+      table.string('number').nullable()
       table.string('rarity').notNullable()
       table.string('variant').nullable().defaultTo('Normal')
       table.string('image_url').notNullable()

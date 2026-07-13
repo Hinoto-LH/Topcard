@@ -23,12 +23,22 @@ export class SyncService {
   private baseUrl = 'https://api.tcgpricelookup.com/v1'
   private apiKey = env.get('TCG_API_KEY').release()
 
-  // Envoie une requête GET authentifiée à l'API et retourne le JSON parsé. Lève une erreur
-  // si l'API répond en erreur.
+  private sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  // Envoie une requête GET authentifiée. Sur 429, attend le délai indiqué par
+  // l'API (header Retry-After) ou 5 s par défaut, puis retente une seule fois.
   private async callApi<T>(url: string): Promise<T> {
     const response = await globalThis.fetch(url, {
       headers: { 'X-API-Key': this.apiKey },
     })
+
+    if (response.status === 429) {
+      const retryAfter = Number(response.headers.get('Retry-After') ?? 5)
+      await this.sleep(retryAfter * 1000)
+      return this.callApi<T>(url)
+    }
 
     if (!response.ok) {
       throw new Error(`Erreur API ${response.status}: ${response.statusText}`)
@@ -99,6 +109,9 @@ export class SyncService {
       }
 
       offset += response.data.length
+
+      // Pause entre les pages pour ne pas saturer le rate limit de l'API.
+      if (offset < total) await this.sleep(300)
     }
     return { synced, errors}
   }

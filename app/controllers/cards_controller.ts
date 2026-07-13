@@ -4,7 +4,8 @@ import UserCard from '#models/user_card'
 
 export default class CardsController {
 
-  // Route publique — silent_auth peuple auth.user si session valide, sinon owned=0 et userCardId=null.
+  // Route publique — silent_auth peuple auth.user si session valide,
+  // sinon owned=0 et userCardId=null.
   async show({ auth, params, response }: HttpContext) {
     const card = await Card.query()
       .where('id', params.id)

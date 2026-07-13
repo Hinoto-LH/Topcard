@@ -21,6 +21,6 @@ export class SyncService {
 
   // Déclenche la synchronisation des cartes d'un set spécifique
   syncCards(setId: number) {
-    return this.http.post<{ synced: number }>(`${API}/admin/sync/cards/${setId}`, {})
+    return this.http.post<{ synced: number; errors: string[] }>(`${API}/admin/sync/cards/${setId}`, {})
   }
 }
