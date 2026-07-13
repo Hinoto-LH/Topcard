@@ -135,6 +135,9 @@ test.group('Sync > synchronisation des cartes', (group) => {
   group.each.teardown(() => {
     globalThis.fetch = savedFetch
   })
+  // Nettoyage après le dernier test du groupe (setup ne couvre pas le dernier test)
+  // Évite que les sets créés ici polluent les tests unitaires qui tournent ensuite.
+  group.teardown(() => cleanData())
 
   test('POST /admin/sync/cards/:setId crée les cartes (id base) et retourne { synced }', async ({
     client,
@@ -175,5 +178,67 @@ test.group('Sync > synchronisation des cartes', (group) => {
 
     const response = await client.post('/admin/sync/cards/99999').loginAs(admin)
     response.assertStatus(500)
+  })
+
+  test('POST /admin/sync/cards/:setId retourne errors dans la réponse', async ({ client, assert }) => {
+    const admin = await createAdmin()
+    const set = await Set.create({
+      externalId: 'OP01',
+      name: 'Romance Dawn',
+      code: 'OP-01',
+      totalCards: 1,
+    })
+
+    globalThis.fetch = makeFetch({
+      total: 1,
+      data: [
+        {
+          id: 'c1',
+          name: 'Luffy',
+          number: 'OP01-001',
+          rarity: 'Leader',
+          variant: null,
+          image_url: 'https://img/c1.png',
+          set: { slug: 'OP-01' },
+        },
+      ],
+    })
+
+    const response = await client.post(`/admin/sync/cards/${set.id}`).loginAs(admin)
+
+    response.assertStatus(200)
+    // Le champ errors doit toujours être présent (tableau vide si tout va bien)
+    assert.isArray(response.body().errors)
+  })
+
+  test('POST /admin/sync/cards/:setId accepte une carte avec number null', async ({ client, assert }) => {
+    const admin = await createAdmin()
+    const set = await Set.create({
+      externalId: 'COL01',
+      name: 'Collection Sets',
+      code: 'COL-01',
+      totalCards: 1,
+    })
+
+    globalThis.fetch = makeFetch({
+      total: 1,
+      data: [
+        {
+          id: 'box1',
+          name: 'Devil Fruits Collection Vol. 1',
+          number: null,
+          rarity: 'None',
+          variant: 'Normal',
+          image_url: 'https://img/box1.png',
+          set: { slug: 'COL-01' },
+        },
+      ],
+    })
+
+    const response = await client.post(`/admin/sync/cards/${set.id}`).loginAs(admin)
+
+    response.assertStatus(200)
+    assert.equal(response.body().synced, 1)
+    assert.isEmpty(response.body().errors)
   })
 })

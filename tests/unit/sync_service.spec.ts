@@ -169,4 +169,69 @@ test.group('SyncService > syncCards', (group) => {
   test('lève une erreur si le set est introuvable en base', async ({ assert }) => {
     await assert.rejects(() => new SyncService().syncCards('INCONNU'))
   })
+
+  test('accepte les cartes avec number null (sets de type collection)', async ({ assert }) => {
+    const set = await Set.create({
+      externalId: 'NULL01',
+      name: 'Collection Sets',
+      code: 'NULL-01',
+      totalCards: 1,
+    })
+
+    globalThis.fetch = makeFetch({
+      total: 1,
+      data: [{ id: 'box1', name: 'Devil Fruits Vol.1', number: null, rarity: 'None', variant: 'Normal', image_url: 'https://img/b.png', set: { slug: 'COL-01' } }],
+    })
+
+    const result = await new SyncService().syncCards(set.id)
+
+    assert.equal(result.synced, 1)
+    assert.isEmpty(result.errors)
+  })
+})
+
+test.group('SyncService > retry 429', (group) => {
+  let savedFetch: typeof globalThis.fetch
+
+  group.each.setup(() => testUtils.db().withGlobalTransaction() as Promise<any>)
+  group.each.setup(() => { savedFetch = globalThis.fetch })
+  group.each.teardown(() => { globalThis.fetch = savedFetch })
+
+  test('callApi retente automatiquement après un 429', async ({ assert }) => {
+    const set = await Set.create({
+      externalId: 'RETRY01',
+      name: 'Retry Set',
+      code: 'RETRY-01',
+      totalCards: 1,
+    })
+
+    let calls = 0
+    globalThis.fetch = async () => {
+      calls++
+      if (calls === 1) {
+        // Premier appel : 429 sans Retry-After (fallback 5s → on override sleep)
+        return {
+          ok: false,
+          status: 429,
+          headers: { get: () => '0' }, // Retry-After: 0 pour ne pas attendre en test
+          json: async () => ({}),
+        } as unknown as Response
+      }
+      // Deuxième appel : succès
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          total: 1,
+          data: [{ id: 'c1', name: 'Luffy', number: 'OP01-001', rarity: 'Leader', variant: null, image_url: 'u', set: { slug: 'OP-01' } }],
+        }),
+      } as unknown as Response
+    }
+
+    const result = await new SyncService().syncCards(set.id)
+
+    // Le service a retenté après le 429 → 2 appels au total, 1 carte synchronisée
+    assert.equal(calls, 2)
+    assert.equal(result.synced, 1)
+  })
 })

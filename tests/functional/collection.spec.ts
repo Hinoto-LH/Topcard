@@ -74,6 +74,28 @@ test.group('Collection > index', (group) => {
   })
 })
 
+test.group('Collection > ajout de carte — validation cardId', (group) => {
+  group.each.setup(() => cleanData())
+
+  test('POST /collection sans cardId retourne 422', async ({ client }) => {
+    const user = await createUser()
+    const response = await client.post('/collection').json({}).loginAs(user)
+    response.assertStatus(422)
+  })
+
+  test('POST /collection avec cardId non numérique retourne 422', async ({ client }) => {
+    const user = await createUser()
+    const response = await client.post('/collection').json({ cardId: 'abc' }).loginAs(user)
+    response.assertStatus(422)
+  })
+
+  test('POST /collection avec cardId < 1 retourne 422', async ({ client }) => {
+    const user = await createUser()
+    const response = await client.post('/collection').json({ cardId: 0 }).loginAs(user)
+    response.assertStatus(422)
+  })
+})
+
 test.group('Collection > ajout de carte', (group) => {
   group.each.setup(() => cleanData())
 
