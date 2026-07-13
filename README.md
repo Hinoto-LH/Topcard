@@ -25,12 +25,17 @@ Topcard/
 │   ├── migrations/      # Migrations de base de données
 │   └── seeders/         # Seeders
 ├── frontend/            # Application Angular (SPA)
-│   └── src/app/
-│       ├── pages/       # Composants lazy-loadés (auth, sets, collection, admin)
-│       ├── services/    # auth.ts, sets.ts, collection.ts, sync.ts
+│   ├── src/app/
+│   │   ├── pages/       # Composants lazy-loadés (auth, sets, collection, admin)
+│   │   ├── services/    # auth.ts, sets.ts, collection.ts, sync.ts
+│   │   ├── guards/      # authGuard, guestGuard, adminGuard
+│   │   ├── interceptors/ # credentials.interceptor.ts (XSRF + withCredentials)
+│   │   └── models/      # Interfaces TypeScript miroir des réponses API
+│   └── tests/           # Tests unitaires Angular (Vitest)
+│       ├── app.spec.ts
+│       ├── services/    # auth, cards, sets, collection, profile, sync, card-modal
 │       ├── guards/      # authGuard, guestGuard, adminGuard
-│       ├── interceptors/ # credentials.interceptor.ts (XSRF + withCredentials)
-│       └── models/      # Interfaces TypeScript miroir des réponses API
+│       └── pages/       # CardDetailComponent, CardModalComponent
 ├── start/
 │   ├── routes.ts        # Définition des routes API
 │   └── kernel.ts        # Middleware globaux
@@ -104,5 +109,14 @@ docker compose exec app node ace migration:run
 ## Tests
 
 ```bash
+# Tests backend (Japa — fonctionnels + unitaires)
 node ace test
+
+# Tests frontend (Vitest)
+cd frontend && npx ng test --no-watch
+
+# Couverture frontend
+cd frontend && npx ng test --no-watch --coverage
 ```
+
+Couverture frontend actuelle : **92 %** (statements).
