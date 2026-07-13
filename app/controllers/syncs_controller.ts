@@ -27,7 +27,7 @@ export default class SyncsController {
         const service = new SyncService()
         try {
             const result = await service.syncCards(params.setId)
-            return response.json({ synced: result.synced })
+            return response.json({ synced: result.synced, errors: result.errors })
         } catch (error) {
             return response.status(500).json({ error: (error as Error).message })
         }

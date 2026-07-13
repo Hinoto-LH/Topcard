@@ -13,16 +13,32 @@
 
   <!-- ── Message retour (succès / erreur) ──────────────────────────────────── -->
   @if (message()) {
-    <div class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm mb-6"
+    <div class="px-4 py-3 rounded-lg text-sm mb-2"
          [style.background]="message()!.type === 'success'
            ? 'rgba(34,197,94,0.1)' : 'rgba(220,38,38,0.12)'"
          [style.border]="message()!.type === 'success'
            ? '1px solid rgba(34,197,94,0.3)' : '1px solid rgba(220,38,38,0.35)'"
          [style.color]="message()!.type === 'success' ? '#86efac' : '#fca5a5'">
-      <ng-icon [name]="message()!.type === 'success' ? 'lucideCheckCircle' : 'lucideAlertCircle'"
-               size="16" />
-      {{ message()!.text }}
+      <div class="flex items-center gap-2">
+        <ng-icon [name]="message()!.type === 'success' ? 'lucideCheckCircle' : 'lucideAlertCircle'"
+                 size="16" />
+        {{ message()!.text }}
+      </div>
     </div>
+
+    <!-- Détail des erreurs carte par carte -->
+    @if (syncErrors().length > 0) {
+      <div class="px-4 py-3 rounded-lg text-xs mb-6 font-mono"
+           style="background: rgba(220,38,38,0.06);
+                  border: 1px solid rgba(220,38,38,0.2);
+                  color: #fca5a5;">
+        @for (err of syncErrors(); track $index) {
+          <p class="py-0.5">{{ err }}</p>
+        }
+      </div>
+    } @else {
+      <div class="mb-6"></div>
+    }
   }
 
   <!-- ── Action principale : sync de tous les sets ─────────────────────────── -->

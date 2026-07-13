@@ -17,6 +17,7 @@ export class SyncComponent implements OnInit {
 
   sets = signal<Set[]>([])
   message = signal<{ text: string; type: 'success' | 'error' } | null>(null)
+  syncErrors = signal<string[]>([])
   // Deux signaux séparés pour distinguer la sync globale (tous les sets)
   // de la sync unitaire (cartes d'un set). Cela permet de n'animer que
   // le bouton concerné plutôt que de tout bloquer avec un seul loading.
@@ -49,9 +50,17 @@ export class SyncComponent implements OnInit {
   syncCards(setId: number) {
     this.syncingSetId.set(setId)
     this.message.set(null)
+    this.syncErrors.set([])
     this.syncService.syncCards(setId).subscribe({
-      next: ({ synced }) => {
-        this.message.set({ text: `${synced} cartes synchronisées`, type: 'success' })
+      next: ({ synced, errors }) => {
+        const hasErrors = errors?.length > 0
+        this.message.set({
+          text: hasErrors
+            ? `${synced} cartes synchronisées, ${errors.length} erreur(s)`
+            : `${synced} cartes synchronisées`,
+          type: hasErrors ? 'error' : 'success',
+        })
+        this.syncErrors.set(errors ?? [])
         this.syncingSetId.set(null)
       },
       error: (err) => {
