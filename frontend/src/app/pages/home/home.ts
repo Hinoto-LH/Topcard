@@ -1,24 +1,25 @@
-import { Component, inject, OnInit, signal } from '@angular/core'
+import { Component, inject, OnInit, OnDestroy, AfterViewInit } from '@angular/core'
 import { RouterLink } from '@angular/router'
-import { AuthService } from '../../services/auth'
-import { SetsService } from '../../services/sets'
-import { Set } from '../../models/models'
+import { LayoutService } from '../../services/layout'
 
 @Component({
   selector: 'app-home',
   imports: [RouterLink],
   templateUrl: './home.html',
+  styleUrl: './home.css',
 })
-export class Home implements OnInit {
-  auth = inject(AuthService)
-  private setsService = inject(SetsService)
+export class Home implements OnInit, OnDestroy, AfterViewInit {
+  private layout = inject(LayoutService)
 
-  // On limite à 6 sets pour l'aperçu de la landing page
-  sets = signal<Set[]>([])
+  ngOnInit()    { this.layout.showNav.set(false) }
+  ngOnDestroy() { this.layout.showNav.set(true) }
 
-  ngOnInit() {
-    this.setsService.getAll().subscribe({
-      next: ({ sets }) => this.sets.set(sets.slice(0, 6)),
-    })
+  ngAfterViewInit() {
+    const reveals = document.querySelectorAll('.reveal')
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }),
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    )
+    reveals.forEach(el => observer.observe(el))
   }
 }
